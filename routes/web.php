@@ -10,6 +10,7 @@ use App\Http\Controllers\SellerOnboardingController;
 use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerPageBuilderController;
 use App\Http\Controllers\SellerPaymentSettingsController;
+use App\Http\Controllers\SellerProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', MarketingController::class)->name('home');
@@ -22,6 +23,10 @@ Route::prefix('seller')->name('seller.')->group(function () {
     Route::get('/dashboard', SellerDashboardController::class)->name('dashboard');
     Route::get('/page-builder', [SellerPageBuilderController::class, 'edit'])->name('page-builder');
     Route::post('/page-builder', [SellerPageBuilderController::class, 'update'])->name('page-builder.update');
+    Route::get('/products', [SellerProductController::class, 'index'])->name('products.index');
+    Route::post('/products', [SellerProductController::class, 'store'])->name('products.store');
+    Route::put('/products/{product}', [SellerProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [SellerProductController::class, 'destroy'])->name('products.destroy');
     Route::get('/form-builder', [SellerFormBuilderController::class, 'edit'])->name('form-builder');
     Route::post('/form-builder', [SellerFormBuilderController::class, 'update'])->name('form-builder.update');
     Route::get('/payment', [SellerPaymentSettingsController::class, 'edit'])->name('payment');

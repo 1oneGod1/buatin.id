@@ -5,10 +5,10 @@
                 <p class="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700">Pesanan Custom</p>
                 <h1 class="mt-2 text-3xl font-black text-slate-950">{{ $seller->brand_name }}</h1>
                 <p class="mt-3 text-sm leading-6 text-slate-600">
-                    Isi brief pesanan dengan jelas agar penjual bisa memahami kebutuhan, menghitung estimasi, dan menindaklanjuti lewat WhatsApp.
+                    Pilih produk acuan jika ada, lalu jelaskan tipe pesanan custom yang ingin dibuat. Detail brief akan dikirim ke penjual untuk dihitung dan ditindaklanjuti lewat WhatsApp.
                 </p>
                 <div class="mt-5 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-                    Estimasi harga awal akan muncul setelah brief dikirim. Harga final tetap bisa disesuaikan setelah diskusi dengan penjual.
+                    Contoh: pilih "Mini figure custom", lalu tulis tipe pesanan "figur karakter 12 cm dari foto referensi". Harga final tetap bisa disesuaikan setelah diskusi dengan penjual.
                 </div>
             </div>
         </aside>
@@ -29,19 +29,21 @@
 
             <div class="mt-5 grid gap-4 md:grid-cols-2">
                 <label class="block">
-                    <span class="text-sm font-bold text-slate-700">Pilih contoh produk</span>
+                    <span class="text-sm font-bold text-slate-700">Pilih produk acuan dari katalog</span>
                     <select name="product_id" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100">
-                        <option value="">Pesanan benar-benar custom</option>
+                        <option value="">Tidak ada acuan, pesanan benar-benar custom</option>
                         @foreach ($seller->products as $product)
                             <option value="{{ $product->id }}" @selected(old('product_id') == $product->id)>
                                 {{ $product->name }} - Rp{{ number_format($product->starting_price, 0, ',', '.') }}
                             </option>
                         @endforeach
                     </select>
+                    <span class="mt-1 block text-xs font-semibold text-slate-500">Opsional. Pilihan ini membantu penjual memberi estimasi awal.</span>
                 </label>
                 <label class="block">
-                    <span class="text-sm font-bold text-slate-700">Jenis produk yang diinginkan</span>
-                    <input name="product_type" value="{{ old('product_type') }}" required placeholder="Contoh: mini figure 12 cm" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <span class="text-sm font-bold text-slate-700">Tipe pesanan custom yang ingin dibuat</span>
+                    <input name="product_type" value="{{ old('product_type') }}" required placeholder="Contoh: mini figure karakter 12 cm dari foto" class="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100">
+                    <span class="mt-1 block text-xs font-semibold text-slate-500">Wajib diisi agar penjual tahu hasil akhir yang kamu harapkan.</span>
                 </label>
             </div>
 

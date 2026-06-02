@@ -15,7 +15,7 @@
             @csrf
             <p class="text-sm font-bold text-emerald-700">Form Builder</p>
             <h1 class="mt-1 text-3xl font-black">Atur field brief custom</h1>
-            <p class="mt-2 text-slate-600">Pilih informasi apa saja yang wajib diisi pelanggan sebelum pesanan dikirim.</p>
+            <p class="mt-2 text-slate-600">Pilih detail tambahan yang ingin dikumpulkan dari pelanggan. Field nama, WhatsApp, produk acuan, dan tipe pesanan custom tetap tersedia di form utama.</p>
 
             <div class="mt-6 grid gap-3">
                 @foreach ($fieldLabels as $key => $label)
@@ -36,7 +36,9 @@
                 <p class="mt-1 text-sm text-slate-500">Mohon lengkapi detail pesanan Anda.</p>
                 <div class="mt-5 space-y-3">
                     <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">Nama pelanggan</div>
-                    <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">Jenis produk</div>
+                    <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">WhatsApp pelanggan</div>
+                    <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">Produk acuan dari katalog</div>
+                    <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">Tipe pesanan custom</div>
                     @foreach ($fields as $key => $enabled)
                         @if ($enabled)
                             <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">{{ $fieldLabels[$key] ?? $key }}</div>

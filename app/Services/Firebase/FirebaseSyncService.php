@@ -50,6 +50,11 @@ class FirebaseSyncService
         ]);
     }
 
+    public function deleteProduct(string $productId): void
+    {
+        $this->firestore->delete('products', $productId);
+    }
+
     public function order(CustomOrder $order): void
     {
         $this->firestore->upsert('orders', $order->order_code, [

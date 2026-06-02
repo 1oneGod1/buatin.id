@@ -3,6 +3,39 @@
 use App\Models\CustomOrder;
 use App\Models\Seller;
 
+it('lets a seller add a custom product to the public catalog and order form', function () {
+    $this->seed();
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+
+    $this->post(route('seller.products.store'), [
+        'name' => 'Lampu nama custom',
+        'category' => 'Merchandise',
+        'description' => 'Lampu meja dengan nama dan bentuk custom.',
+        'starting_price' => 175000,
+        'is_featured' => '1',
+    ])->assertRedirect();
+
+    $this->assertDatabaseHas('products', [
+        'seller_id' => $seller->id,
+        'name' => 'Lampu nama custom',
+        'category' => 'Merchandise',
+        'starting_price' => 175000,
+        'is_featured' => true,
+    ]);
+
+    $this->get(route('public.store', $seller))
+        ->assertOk()
+        ->assertSee('Lampu nama custom')
+        ->assertSee('Merchandise');
+
+    $this->get(route('public.order.create', $seller))
+        ->assertOk()
+        ->assertSee('Pilih produk acuan dari katalog')
+        ->assertSee('Tipe pesanan custom yang ingin dibuat')
+        ->assertSee('Lampu nama custom');
+});
+
 it('lets a customer submit a custom order and view the summary', function () {
     $this->seed();
 

@@ -24,6 +24,7 @@
                     @if ($isSellerArea)
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Dashboard</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.page-builder') }}">Halaman</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.products.index') }}">Produk</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.form-builder') }}">Form</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.payment') }}">QRIS</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.orders.index') }}">Order</a>

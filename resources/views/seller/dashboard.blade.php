@@ -8,6 +8,7 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('public.store', $seller) }}" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Lihat halaman publik</a>
+                <a href="{{ route('seller.products.index') }}" class="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800">Tambah produk custom</a>
                 <a href="{{ route('seller.page-builder') }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white">Edit halaman</a>
             </div>
         </div>
@@ -25,10 +26,15 @@
         <div class="mt-8 grid gap-6 lg:grid-cols-[340px_1fr]">
             <div class="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-slate-200">
                 <h2 class="text-lg font-black">Aksi cepat</h2>
-                <div class="mt-4 grid grid-cols-3 gap-3">
+                <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">
                     <a href="{{ route('seller.page-builder') }}" class="rounded-2xl bg-emerald-50 p-4 text-center text-sm font-bold text-emerald-800">Edit<br>Halaman</a>
+                    <a href="{{ route('seller.products.index') }}" class="rounded-2xl bg-lime-50 p-4 text-center text-sm font-bold text-lime-800">Tambah<br>Produk</a>
                     <a href="{{ route('seller.form-builder') }}" class="rounded-2xl bg-blue-50 p-4 text-center text-sm font-bold text-blue-800">Atur<br>Form</a>
                     <a href="{{ route('seller.payment') }}" class="rounded-2xl bg-amber-50 p-4 text-center text-sm font-bold text-amber-800">Atur<br>QRIS</a>
+                </div>
+                <div class="mt-5 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+                    <p class="font-black">Alur penjual yang disarankan</p>
+                    <p class="mt-1">Isi profil toko, tambah produk custom sebagai katalog, atur field brief, lalu bagikan link publik.</p>
                 </div>
                 <div class="mt-6 rounded-2xl bg-slate-50 p-4">
                     <p class="text-xs font-black uppercase text-slate-500">Link publik</p>
