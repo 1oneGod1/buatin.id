@@ -8,6 +8,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased">
+    @php
+        $isSellerArea = request()->routeIs('seller.*');
+        $demoSeller = \App\Models\Seller::query()->first();
+        $currentSeller = request()->route('seller') instanceof \App\Models\Seller ? request()->route('seller') : $demoSeller;
+    @endphp
     <div class="min-h-screen">
         <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/90 backdrop-blur">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -16,12 +21,20 @@
                     Buatin.id
                 </a>
                 <nav class="hidden items-center gap-2 text-sm font-semibold text-slate-600 md:flex">
-                    <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Dashboard</a>
-                    <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.page-builder') }}">Page Builder</a>
-                    <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.orders.index') }}">Order</a>
+                    @if ($isSellerArea)
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Dashboard</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.page-builder') }}">Halaman</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.form-builder') }}">Form</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.payment') }}">QRIS</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.orders.index') }}">Order</a>
+                    @else
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('seller.start') }}">Contoh Toko</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('orders.lookup') }}">Cek Status</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Untuk Penjual</a>
+                    @endif
                 </nav>
-                <a href="{{ route('seller.start') }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700">
-                    Mulai
+                <a href="{{ $isSellerArea && $currentSeller ? route('public.store', $currentSeller) : route('seller.start') }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700">
+                    {{ $isSellerArea ? 'Toko Publik' : 'Mulai Gratis' }}
                 </a>
             </div>
         </header>
