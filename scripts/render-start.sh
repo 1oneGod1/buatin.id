@@ -28,9 +28,17 @@ php artisan route:clear
 php artisan view:clear
 php artisan storage:link || true
 
-php artisan migrate --force
+if ! php artisan migrate --force; then
+    echo "Primary database migration failed; falling back to SQLite for this instance."
+    export DB_CONNECTION=sqlite
+    export DB_DATABASE=/var/www/html/database/database.sqlite
+    touch "$DB_DATABASE"
+    php artisan config:clear
+    php artisan migrate --force
+fi
+
 php artisan db:seed --force
-php artisan firebase:sync
+php artisan firebase:sync || echo "Firebase sync failed; continuing startup."
 
 php artisan config:cache
 php artisan route:cache
