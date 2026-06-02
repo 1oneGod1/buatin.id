@@ -4,6 +4,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    dockerCommand: sh scripts/render-start.sh
     plan: free
     region: singapore
     healthCheckPath: /up
