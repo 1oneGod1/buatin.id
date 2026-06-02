@@ -19,7 +19,7 @@ class SellerDashboardController extends Controller
             'orders' => $orders->take(5),
             'stats' => [
                 'visits' => 240,
-                'new_orders' => $orders->where('status', 'received')->count(),
+                'new_orders' => $orders->whereIn('status', ['waiting_payment', 'received'])->count(),
                 'pending_payment' => $orders->whereIn('payment_status', ['unpaid', 'proof_uploaded'])->count(),
                 'completed' => $orders->where('status', 'completed')->count(),
             ],

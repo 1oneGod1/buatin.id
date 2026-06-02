@@ -1,5 +1,15 @@
 <x-layouts.app title="Form Builder - Buatin.id">
     @php($fields = $seller->enabledFields())
+    @php($fieldLabels = [
+        'material' => 'Material',
+        'size' => 'Ukuran',
+        'color' => 'Warna',
+        'quantity' => 'Jumlah',
+        'deadline' => 'Deadline',
+        'budget' => 'Budget',
+        'reference' => 'Upload referensi',
+        'notes' => 'Catatan tambahan',
+    ])
     <section class="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1fr_420px]">
         <form method="POST" action="{{ route('seller.form-builder.update') }}" class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             @csrf
@@ -8,16 +18,7 @@
             <p class="mt-2 text-slate-600">Pilih informasi apa saja yang wajib diisi pelanggan sebelum pesanan dikirim.</p>
 
             <div class="mt-6 grid gap-3">
-                @foreach ([
-                    'material' => 'Material',
-                    'size' => 'Ukuran',
-                    'color' => 'Warna',
-                    'quantity' => 'Jumlah',
-                    'deadline' => 'Deadline',
-                    'budget' => 'Budget',
-                    'reference' => 'Upload referensi',
-                    'notes' => 'Catatan tambahan',
-                ] as $key => $label)
+                @foreach ($fieldLabels as $key => $label)
                     <label class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                         <span class="font-bold text-slate-800">{{ $label }}</span>
                         <input type="checkbox" name="fields[{{ $key }}]" value="1" @checked($fields[$key] ?? false) class="size-5 accent-emerald-600">
@@ -38,7 +39,7 @@
                     <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">Jenis produk</div>
                     @foreach ($fields as $key => $enabled)
                         @if ($enabled)
-                            <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">{{ Str::headline($key) }}</div>
+                            <div class="rounded-2xl bg-white p-3 text-sm font-semibold text-slate-600">{{ $fieldLabels[$key] ?? $key }}</div>
                         @endif
                     @endforeach
                 </div>

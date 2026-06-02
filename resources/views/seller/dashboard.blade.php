@@ -46,7 +46,7 @@
                         <a href="{{ route('seller.orders.show', $order) }}" class="flex items-center justify-between gap-4 py-4">
                             <div>
                                 <p class="font-black">{{ $order->customer_name }}</p>
-                                <p class="text-sm text-slate-500">{{ $order->product_type }} · {{ $order->order_code }}</p>
+                                <p class="text-sm text-slate-500">{{ $order->product_type }} - {{ $order->order_code }}</p>
                             </div>
                             <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">{{ $order->payment_status_label }}</span>
                         </a>
