@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             [
                 'brand_name' => 'Disyan 3D Studio',
                 'category' => 'Jasa desain & cetak 3D',
-                'whatsapp' => '081234567890',
+                'whatsapp' => '082260638053',
                 'location' => 'Surabaya, Indonesia',
                 'description' => 'Melayani desain produk, mini figure, prototype casing, dan spare part custom berbasis 3D printing.',
                 'qris_path' => 'https://firebasestorage.googleapis.com/v0/b/buatin-id-34ac3.firebasestorage.app/o/qris%2F0208e62e-bb3c-4596-a036-951d855c420e.png?alt=media&token=172235ba-cb20-433e-aeca-6f340dfe1de2',
@@ -51,6 +51,10 @@ class DatabaseSeeder extends Seeder
                 ],
             ],
         );
+
+        if ($seller->whatsapp !== '082260638053') {
+            $seller->update(['whatsapp' => '082260638053']);
+        }
 
         if (! $seller->qris_path) {
             $seller->update([
