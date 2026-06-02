@@ -35,8 +35,9 @@ class DatabaseSeeder extends Seeder
                 'whatsapp' => '081234567890',
                 'location' => 'Surabaya, Indonesia',
                 'description' => 'Melayani desain produk, mini figure, prototype casing, dan spare part custom berbasis 3D printing.',
-                'payment_account' => 'QRIS Disyan 3D Studio',
-                'payment_instructions' => 'Silakan scan QRIS, lalu upload bukti pembayaran agar pesanan dapat diproses.',
+                'qris_path' => 'https://firebasestorage.googleapis.com/v0/b/buatin-id-34ac3.firebasestorage.app/o/qris%2F0208e62e-bb3c-4596-a036-951d855c420e.png?alt=media&token=172235ba-cb20-433e-aeca-6f340dfe1de2',
+                'payment_account' => 'QRIS Demo Disyan 3D Studio',
+                'payment_instructions' => 'Scan QRIS demo ini, lalu upload bukti pembayaran untuk melanjutkan pesanan.',
                 'qris_enabled' => true,
                 'form_fields' => [
                     'material' => true,
@@ -50,6 +51,15 @@ class DatabaseSeeder extends Seeder
                 ],
             ],
         );
+
+        if (! $seller->qris_path) {
+            $seller->update([
+                'qris_path' => 'https://firebasestorage.googleapis.com/v0/b/buatin-id-34ac3.firebasestorage.app/o/qris%2F0208e62e-bb3c-4596-a036-951d855c420e.png?alt=media&token=172235ba-cb20-433e-aeca-6f340dfe1de2',
+                'payment_account' => 'QRIS Demo Disyan 3D Studio',
+                'payment_instructions' => 'Scan QRIS demo ini, lalu upload bukti pembayaran untuk melanjutkan pesanan.',
+                'qris_enabled' => true,
+            ]);
+        }
 
         $products = [
             ['Mini figure custom', 'Figur custom berbasis referensi karakter pelanggan.', 'Figurine', 150000],
