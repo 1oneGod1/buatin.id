@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesSeller;
+use App\Services\Firebase\FirebaseStorageService;
+use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SellerPageBuilderController extends Controller
 {
     use ResolvesSeller;
+
+    public function __construct(
+        private readonly FirebaseStorageService $files,
+        private readonly FirebaseSyncService $firebase,
+    ) {}
 
     public function edit(): View
     {
@@ -34,16 +40,14 @@ class SellerPageBuilderController extends Controller
 
         foreach (['logo' => 'logo_path', 'banner' => 'banner_path'] as $input => $column) {
             if ($request->hasFile($input)) {
-                if ($seller->{$column}) {
-                    Storage::disk('public')->delete($seller->{$column});
-                }
-
-                $validated[$column] = $request->file($input)->store($input.'s', 'public');
+                $this->files->delete($seller->{$column});
+                $validated[$column] = $this->files->upload($request->file($input), $input.'s');
             }
         }
 
         unset($validated['logo'], $validated['banner']);
         $seller->update($validated);
+        $this->firebase->seller($seller->fresh());
 
         return back()->with('status', 'Halaman publik berhasil diperbarui.');
     }

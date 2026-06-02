@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesSeller;
 use App\Models\CustomOrder;
+use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 class SellerOrderController extends Controller
 {
     use ResolvesSeller;
+
+    public function __construct(private readonly FirebaseSyncService $firebase) {}
 
     public function index(): View
     {
@@ -41,6 +44,7 @@ class SellerOrderController extends Controller
         ]);
 
         $order->update($validated);
+        $this->firebase->order($order->fresh(['seller', 'product']));
 
         return back()->with('status', 'Status pesanan berhasil diperbarui.');
     }

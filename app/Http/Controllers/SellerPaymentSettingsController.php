@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesSeller;
+use App\Services\Firebase\FirebaseStorageService;
+use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SellerPaymentSettingsController extends Controller
 {
     use ResolvesSeller;
+
+    public function __construct(
+        private readonly FirebaseStorageService $files,
+        private readonly FirebaseSyncService $firebase,
+    ) {}
 
     public function edit(): View
     {
@@ -32,15 +38,13 @@ class SellerPaymentSettingsController extends Controller
         $validated['qris_enabled'] = $request->boolean('qris_enabled');
 
         if ($request->hasFile('qris')) {
-            if ($seller->qris_path) {
-                Storage::disk('public')->delete($seller->qris_path);
-            }
-
-            $validated['qris_path'] = $request->file('qris')->store('qris', 'public');
+            $this->files->delete($seller->qris_path);
+            $validated['qris_path'] = $this->files->upload($request->file('qris'), 'qris');
         }
 
         unset($validated['qris']);
         $seller->update($validated);
+        $this->firebase->seller($seller->fresh());
 
         return back()->with('status', 'Pengaturan pembayaran berhasil disimpan.');
     }

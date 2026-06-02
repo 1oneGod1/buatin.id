@@ -48,7 +48,7 @@
 
             <div class="mt-5 grid aspect-square place-items-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6">
                 @if ($order->seller->qris_path)
-                    <img src="{{ asset('storage/'.$order->seller->qris_path) }}" alt="QRIS {{ $order->seller->brand_name }}" class="max-h-full max-w-full rounded-2xl object-contain">
+                    <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($order->seller->qris_path) }}" alt="QRIS {{ $order->seller->brand_name }}" class="max-h-full max-w-full rounded-2xl object-contain">
                 @else
                     <div class="text-center">
                         <p class="text-3xl font-black text-slate-300">QRIS</p>

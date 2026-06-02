@@ -35,7 +35,7 @@
                 <div class="rounded-2xl border border-slate-200 p-4">
                     <p class="text-xs font-black uppercase text-slate-500">Referensi desain</p>
                     @if ($order->reference_path)
-                        <a href="{{ asset('storage/'.$order->reference_path) }}" target="_blank" class="mt-3 inline-flex rounded-xl bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">Buka file referensi</a>
+                        <a href="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($order->reference_path) }}" target="_blank" class="mt-3 inline-flex rounded-xl bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">Buka file referensi</a>
                     @else
                         <p class="mt-3 text-sm text-slate-500">Belum ada file.</p>
                     @endif
@@ -43,7 +43,7 @@
                 <div class="rounded-2xl border border-slate-200 p-4">
                     <p class="text-xs font-black uppercase text-slate-500">Bukti pembayaran</p>
                     @if ($order->payment_proof_path)
-                        <a href="{{ asset('storage/'.$order->payment_proof_path) }}" target="_blank" class="mt-3 inline-flex rounded-xl bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">Buka bukti pembayaran</a>
+                        <a href="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($order->payment_proof_path) }}" target="_blank" class="mt-3 inline-flex rounded-xl bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">Buka bukti pembayaran</a>
                     @else
                         <p class="mt-3 text-sm text-red-500">Bukti belum diterima.</p>
                     @endif

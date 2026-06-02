@@ -6,15 +6,21 @@ use App\Http\Controllers\Concerns\ResolvesSeller;
 use App\Models\CustomOrder;
 use App\Models\Product;
 use App\Models\Seller;
+use App\Services\Firebase\FirebaseStorageService;
+use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CustomerOrderController extends Controller
 {
     use ResolvesSeller;
+
+    public function __construct(
+        private readonly FirebaseStorageService $files,
+        private readonly FirebaseSyncService $firebase,
+    ) {}
 
     public function create(Seller $seller): View
     {
@@ -49,7 +55,7 @@ class CustomerOrderController extends Controller
         $estimatedPrice = ($product?->starting_price ?: 100000) * max(1, $quantity);
 
         if ($request->hasFile('reference')) {
-            $validated['reference_path'] = $request->file('reference')->store('references', 'public');
+            $validated['reference_path'] = $this->files->upload($request->file('reference'), 'references');
         }
 
         unset($validated['reference']);
@@ -64,6 +70,8 @@ class CustomerOrderController extends Controller
             'status' => 'waiting_payment',
             'payment_status' => 'unpaid',
         ]);
+
+        $this->firebase->order($order->load('seller', 'product'));
 
         return redirect()->route('orders.summary', $order);
     }
@@ -82,14 +90,14 @@ class CustomerOrderController extends Controller
             'payment_proof' => ['required', 'file', 'max:5120'],
         ]);
 
-        if ($order->payment_proof_path) {
-            Storage::disk('public')->delete($order->payment_proof_path);
-        }
+        $this->files->delete($order->payment_proof_path);
 
         $order->update([
-            'payment_proof_path' => $request->file('payment_proof')->store('payment-proofs', 'public'),
+            'payment_proof_path' => $this->files->upload($request->file('payment_proof'), 'payment-proofs'),
             'payment_status' => 'proof_uploaded',
         ]);
+
+        $this->firebase->order($order->fresh(['seller', 'product']));
 
         return back()->with('status', 'Bukti pembayaran berhasil diunggah.');
     }

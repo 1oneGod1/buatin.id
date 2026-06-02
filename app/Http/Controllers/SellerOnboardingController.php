@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Seller;
+use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SellerOnboardingController extends Controller
 {
+    public function __construct(private readonly FirebaseSyncService $firebase) {}
+
     public function create(): View
     {
         return view('seller.onboarding', [
@@ -37,6 +40,7 @@ class SellerOnboardingController extends Controller
         }
 
         session(['seller_id' => $seller->id]);
+        $this->firebase->seller($seller->fresh());
 
         return redirect()->route('seller.dashboard')->with('status', 'Profil usaha berhasil disimpan.');
     }

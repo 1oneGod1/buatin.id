@@ -33,7 +33,7 @@
 
             <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 shadow-xl">
                 @if ($seller->banner_path)
-                    <img src="{{ asset('storage/'.$seller->banner_path) }}" alt="Banner {{ $seller->brand_name }}" class="h-72 w-full object-cover">
+                    <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($seller->banner_path) }}" alt="Banner {{ $seller->brand_name }}" class="h-72 w-full object-cover">
                 @else
                     <div class="grid h-72 place-items-center bg-[radial-gradient(circle_at_top_left,#34d399,transparent_35%),linear-gradient(135deg,#0f172a,#164e63)] px-8 text-center text-white">
                         <div>
@@ -69,7 +69,7 @@
                 <article class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
                     <div class="grid aspect-[4/3] place-items-center bg-slate-100">
                         @if ($product->image_path)
-                            <img src="{{ asset('storage/'.$product->image_path) }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
+                            <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($product->image_path) }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
                         @else
                             <div class="px-6 text-center">
                                 <p class="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">{{ $product->category }}</p>

@@ -33,7 +33,7 @@
             <p class="text-sm font-bold text-slate-500">Preview pembayaran</p>
             <div class="mt-4 rounded-[1.5rem] border border-emerald-100 p-5 text-center">
                 @if ($seller->qris_path)
-                    <img src="{{ asset('storage/'.$seller->qris_path) }}" alt="QRIS" class="mx-auto aspect-square w-56 rounded-2xl object-cover">
+                    <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($seller->qris_path) }}" alt="QRIS" class="mx-auto aspect-square w-56 rounded-2xl object-cover">
                 @else
                     <div class="mx-auto grid aspect-square w-56 place-items-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50 text-sm font-bold text-emerald-700">QRIS belum diupload</div>
                 @endif
