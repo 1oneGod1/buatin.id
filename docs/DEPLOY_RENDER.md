@@ -44,6 +44,29 @@ Output panjang dari command itu nanti dipakai untuk env `FIREBASE_CREDENTIALS_BA
    - `FIREBASE_CREDENTIALS_BASE64`: isi dengan service account JSON yang sudah diubah ke base64
 6. Deploy.
 
+## Jika Deploy Menampilkan `Running '.'`
+
+Jika log Render berisi:
+
+```text
+==> Running '.'
+bash: line 1: .: filename argument required
+```
+
+Artinya service Render dibuat dengan runtime/start command yang salah. Perbaikannya:
+
+1. Buka service `buatin-id` di Render.
+2. Masuk ke **Settings**.
+3. Cek **Runtime**. Untuk app ini harus **Docker**, bukan Node.
+4. Jika ada **Start Command** berisi `.`, hapus isinya.
+5. Untuk Docker, Start Command boleh dikosongkan karena Dockerfile sudah punya:
+
+```text
+CMD ["sh", "scripts/render-start.sh"]
+```
+
+6. Jika Render tidak mengizinkan mengganti runtime menjadi Docker, buat service baru lewat **New + > Blueprint** dari repo ini.
+
 ## Catatan Penting
 
 - Render Postgres plan gratis cocok untuk testing, tetapi database gratis punya batas waktu dan limit. Jangan dipakai sebagai database bisnis sungguhan.
