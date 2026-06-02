@@ -30,8 +30,8 @@ FROM php:8.3-cli-alpine
 
 WORKDIR /var/www/html
 
-RUN apk add --no-cache bash ca-certificates libpq-dev postgresql-client \
-    && docker-php-ext-install pdo_pgsql
+RUN apk add --no-cache bash ca-certificates libpq-dev postgresql-client sqlite-dev \
+    && docker-php-ext-install pdo_pgsql pdo_sqlite
 
 COPY . .
 COPY --from=vendor /app/vendor ./vendor

@@ -8,6 +8,17 @@ fi
 
 mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
 
+if [ "${DB_CONNECTION:-}" = "pgsql" ] && [ -z "${DB_URL:-}" ] && [ -z "${DATABASE_URL:-}" ]; then
+    echo "Postgres URL is missing; falling back to SQLite for this deployment."
+    export DB_CONNECTION=sqlite
+    export DB_DATABASE=/var/www/html/database/database.sqlite
+fi
+
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+    mkdir -p database
+    touch "${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+fi
+
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
@@ -21,4 +32,4 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-php artisan serve --host=0.0.0.0 --port="${PORT:-10000}"
+exec php -S 0.0.0.0:"${PORT:-10000}" -t public public/index.php
