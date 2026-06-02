@@ -2,8 +2,12 @@
 set -e
 
 if [ -z "$APP_KEY" ]; then
-    echo "APP_KEY is missing. Generate one with: php artisan key:generate --show"
-    exit 1
+    echo "APP_KEY is missing; generating an ephemeral key for this instance."
+    export APP_KEY="$(php artisan key:generate --show --no-ansi)"
+fi
+
+if [ -z "${APP_URL:-}" ] && [ -n "${RENDER_EXTERNAL_URL:-}" ]; then
+    export APP_URL="$RENDER_EXTERNAL_URL"
 fi
 
 mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
