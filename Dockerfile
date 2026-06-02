@@ -26,7 +26,7 @@ COPY routes ./routes
 COPY artisan ./
 RUN composer dump-autoload --optimize
 
-FROM php:8.3-cli-alpine
+FROM php:8.4-cli-alpine
 
 WORKDIR /var/www/html
 
