@@ -3,6 +3,42 @@
 use App\Models\CustomOrder;
 use App\Models\Seller;
 
+it('lets a seller create a new public store without overwriting the demo store', function () {
+    $this->seed();
+
+    $demo = Seller::where('slug', 'disyanz3d')->firstOrFail();
+
+    $this->post(route('seller.start.store'), [
+        'create_new' => '1',
+        'brand_name' => 'Kue Custom Andi',
+        'category' => 'Kue custom',
+        'whatsapp' => '082260638053',
+        'location' => 'Surabaya',
+        'description' => 'Menerima pesanan kue ulang tahun custom.',
+    ])->assertRedirect(route('seller.dashboard'));
+
+    $demo->refresh();
+
+    expect($demo->brand_name)->toBe('Disyan 3D Studio')
+        ->and(Seller::where('slug', 'kue-custom-andi')->exists())->toBeTrue();
+});
+
+it('lets a seller select a subscription plan for the freemium MVP', function () {
+    $this->seed();
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    session(['seller_id' => $seller->id]);
+
+    $this->post(route('seller.subscription.update'), [
+        'plan' => 'starter',
+    ])->assertRedirect();
+
+    $seller->refresh();
+
+    expect($seller->plan)->toBe('starter')
+        ->and($seller->subscription_status)->toBe('active');
+});
+
 it('lets a seller add a custom product to the public catalog and order form', function () {
     $this->seed();
 

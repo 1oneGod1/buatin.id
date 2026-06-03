@@ -11,25 +11,28 @@
 
             <form method="POST" action="{{ route('seller.start.store') }}" class="mt-8 space-y-5">
                 @csrf
+                @if ($isCreatingNew ?? false)
+                    <input type="hidden" name="create_new" value="1">
+                @endif
                 <div>
                     <label class="text-sm font-bold text-slate-700">Nama brand</label>
-                    <input name="brand_name" value="{{ old('brand_name', $seller->brand_name ?? 'Disyan 3D Studio') }}" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
+                    <input name="brand_name" value="{{ old('brand_name', $seller->brand_name ?? '') }}" placeholder="Contoh: Disyan 3D Studio" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-slate-700">Kategori usaha</label>
-                    <input name="category" value="{{ old('category', $seller->category ?? 'Jasa desain & cetak 3D') }}" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
+                    <input name="category" value="{{ old('category', $seller->category ?? '') }}" placeholder="Contoh: Jasa desain & cetak 3D" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-slate-700">Nomor WhatsApp</label>
-                    <input name="whatsapp" value="{{ old('whatsapp', $seller->whatsapp ?? '081234567890') }}" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
+                    <input name="whatsapp" value="{{ old('whatsapp', $seller->whatsapp ?? '') }}" placeholder="Contoh: 082260638053" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-slate-700">Lokasi</label>
-                    <input name="location" value="{{ old('location', $seller->location ?? 'Surabaya, Indonesia') }}" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
+                    <input name="location" value="{{ old('location', $seller->location ?? '') }}" placeholder="Contoh: Surabaya, Indonesia" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-sm font-bold text-slate-700">Deskripsi singkat</label>
-                    <textarea name="description" rows="4" class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">{{ old('description', $seller->description ?? 'Melayani desain produk, mini figure, dan prototype casing custom berbasis 3D printing.') }}</textarea>
+                    <textarea name="description" rows="4" placeholder="Contoh: Melayani desain produk, mini figure, dan prototype casing custom berbasis 3D printing." class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500">{{ old('description', $seller->description ?? '') }}</textarea>
                 </div>
                 <button class="w-full rounded-2xl bg-emerald-600 px-6 py-4 font-black text-white hover:bg-emerald-700">
                     Lanjut buat halaman

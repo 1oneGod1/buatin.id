@@ -11,6 +11,7 @@ use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerPageBuilderController;
 use App\Http\Controllers\SellerPaymentSettingsController;
 use App\Http\Controllers\SellerProductController;
+use App\Http\Controllers\SellerSubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', MarketingController::class)->name('home');
@@ -31,6 +32,8 @@ Route::prefix('seller')->name('seller.')->group(function () {
     Route::post('/form-builder', [SellerFormBuilderController::class, 'update'])->name('form-builder.update');
     Route::get('/payment', [SellerPaymentSettingsController::class, 'edit'])->name('payment');
     Route::post('/payment', [SellerPaymentSettingsController::class, 'update'])->name('payment.update');
+    Route::get('/subscription', [SellerSubscriptionController::class, 'edit'])->name('subscription');
+    Route::post('/subscription', [SellerSubscriptionController::class, 'update'])->name('subscription.update');
     Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [SellerOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}', [SellerOrderController::class, 'update'])->name('orders.update');

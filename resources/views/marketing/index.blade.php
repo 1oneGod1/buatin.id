@@ -13,7 +13,7 @@
                 Untuk kreator dan UMKM yang menerima pesanan custom dari chat, katalog, dan form brief dalam satu link.
             </p>
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="{{ route('seller.start') }}" class="rounded-2xl bg-emerald-600 px-6 py-4 text-center font-bold text-white shadow-lg shadow-emerald-900/10 hover:bg-emerald-700">
+                <a href="{{ route('seller.start', ['new' => 1]) }}" class="rounded-2xl bg-emerald-600 px-6 py-4 text-center font-bold text-white shadow-lg shadow-emerald-900/10 hover:bg-emerald-700">
                     Mulai Gratis
                 </a>
                 @if ($seller)

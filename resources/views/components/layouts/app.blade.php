@@ -11,7 +11,10 @@
     @php
         $isSellerArea = request()->routeIs('seller.*');
         $demoSeller = \App\Models\Seller::query()->first();
-        $currentSeller = request()->route('seller') instanceof \App\Models\Seller ? request()->route('seller') : $demoSeller;
+        $sessionSeller = session('seller_id') ? \App\Models\Seller::find(session('seller_id')) : null;
+        $currentSeller = request()->route('seller') instanceof \App\Models\Seller
+            ? request()->route('seller')
+            : ($sessionSeller ?: $demoSeller);
     @endphp
     <div class="min-h-screen">
         <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/90 backdrop-blur">
@@ -27,6 +30,7 @@
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.products.index') }}">Produk</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.form-builder') }}">Form</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.payment') }}">QRIS</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.subscription') }}">Paket</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.orders.index') }}">Order</a>
                     @else
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('seller.start') }}">Contoh Toko</a>
@@ -34,7 +38,7 @@
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Untuk Penjual</a>
                     @endif
                 </nav>
-                <a href="{{ $isSellerArea && $currentSeller ? route('public.store', $currentSeller) : route('seller.start') }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700">
+                <a href="{{ $isSellerArea && $currentSeller ? route('public.store', $currentSeller) : route('seller.start', ['new' => 1]) }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700">
                     {{ $isSellerArea ? 'Toko Publik' : 'Mulai Gratis' }}
                 </a>
             </div>

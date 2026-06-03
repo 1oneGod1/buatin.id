@@ -22,6 +22,8 @@ use Illuminate\Support\Str;
     'payment_instructions',
     'qris_enabled',
     'form_fields',
+    'plan',
+    'subscription_status',
 ])]
 class Seller extends Model
 {
@@ -55,6 +57,15 @@ class Seller extends Model
             'reference' => true,
             'notes' => true,
         ];
+    }
+
+    public function planLabel(): string
+    {
+        return [
+            'free' => 'Free',
+            'starter' => 'Starter',
+            'pro' => 'Pro',
+        ][$this->plan ?? 'free'] ?? 'Free';
     }
 
     protected function publicUrl(): Attribute

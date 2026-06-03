@@ -27,6 +27,8 @@ class FirebaseSyncService
             'payment_instructions' => $seller->payment_instructions,
             'qris_enabled' => $seller->qris_enabled,
             'form_fields' => $seller->enabledFields(),
+            'plan' => $seller->plan,
+            'subscription_status' => $seller->subscription_status,
             'public_url' => $seller->public_url,
             'created_at' => $seller->created_at,
             'updated_at' => $seller->updated_at,

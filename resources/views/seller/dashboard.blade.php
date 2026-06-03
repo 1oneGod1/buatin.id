@@ -4,7 +4,7 @@
             <div>
                 <p class="text-sm font-bold text-emerald-700">Seller Dashboard</p>
                 <h1 class="mt-1 text-3xl font-black">Halo, {{ explode(' ', $seller->brand_name)[0] }}</h1>
-                <p class="mt-2 text-slate-600">Pantau performa toko dan pesanan custom hari ini.</p>
+                <p class="mt-2 text-slate-600">Pantau performa toko dan pesanan custom hari ini. Paket aktif: <strong class="text-emerald-700">{{ $seller->planLabel() }}</strong>.</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('public.store', $seller) }}" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Lihat halaman publik</a>
@@ -14,7 +14,7 @@
         </div>
 
         <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ([['Kunjungan', $stats['visits'], '+12% dari kemarin'], ['Order baru', $stats['new_orders'], 'Perlu diproses'], ['Belum bayar', $stats['pending_payment'], 'Follow up pembeli'], ['Selesai', $stats['completed'], 'Bulan ini']] as [$label, $value, $hint])
+            @foreach ([['Produk', $stats['products'], 'Tampil di katalog'], ['Order baru', $stats['new_orders'], 'Perlu diproses'], ['Belum bayar', $stats['pending_payment'], 'Follow up pembeli'], ['Selesai', $stats['completed'], 'Bulan ini']] as [$label, $value, $hint])
                 <div class="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <p class="text-xs font-black uppercase tracking-wide text-slate-500">{{ $label }}</p>
                     <p class="mt-3 text-4xl font-black {{ $label === 'Order baru' ? 'text-emerald-600' : ($label === 'Belum bayar' ? 'text-red-600' : 'text-slate-950') }}">{{ $value }}</p>
@@ -31,6 +31,7 @@
                     <a href="{{ route('seller.products.index') }}" class="rounded-2xl bg-lime-50 p-4 text-center text-sm font-bold text-lime-800">Tambah<br>Produk</a>
                     <a href="{{ route('seller.form-builder') }}" class="rounded-2xl bg-blue-50 p-4 text-center text-sm font-bold text-blue-800">Atur<br>Form</a>
                     <a href="{{ route('seller.payment') }}" class="rounded-2xl bg-amber-50 p-4 text-center text-sm font-bold text-amber-800">Atur<br>QRIS</a>
+                    <a href="{{ route('seller.subscription') }}" class="rounded-2xl bg-violet-50 p-4 text-center text-sm font-bold text-violet-800">Paket<br>Premium</a>
                 </div>
                 <div class="mt-5 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
                     <p class="font-black">Alur penjual yang disarankan</p>

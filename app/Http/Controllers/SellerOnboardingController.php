@@ -12,10 +12,13 @@ class SellerOnboardingController extends Controller
 {
     public function __construct(private readonly FirebaseSyncService $firebase) {}
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        $isCreatingNew = $request->boolean('new');
+
         return view('seller.onboarding', [
-            'seller' => session('seller_id') ? Seller::find(session('seller_id')) : Seller::first(),
+            'seller' => $isCreatingNew ? null : (session('seller_id') ? Seller::find(session('seller_id')) : Seller::first()),
+            'isCreatingNew' => $isCreatingNew,
         ]);
     }
 
@@ -29,13 +32,15 @@ class SellerOnboardingController extends Controller
             'description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $seller = session('seller_id') ? Seller::find(session('seller_id')) : null;
+        $seller = $request->boolean('create_new') ? null : (session('seller_id') ? Seller::find(session('seller_id')) : null);
 
         if ($seller) {
             $seller->update($validated);
         } else {
             $validated['slug'] = Seller::makeSlug($validated['brand_name']);
             $validated['form_fields'] = Seller::first()?->enabledFields();
+            $validated['plan'] = 'free';
+            $validated['subscription_status'] = 'active';
             $seller = Seller::create($validated);
         }
 
