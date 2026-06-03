@@ -42,31 +42,35 @@
         </div>
 
         <aside class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p class="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700">Pembayaran QRIS</p>
+            <p class="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700">Pembayaran</p>
             <h2 class="mt-2 text-2xl font-black text-slate-950">{{ $order->seller->payment_account ?: $order->seller->brand_name }}</h2>
-            <p class="mt-3 text-sm leading-6 text-slate-600">{{ $order->seller->payment_instructions }}</p>
+            <p class="mt-3 text-sm leading-6 text-slate-600">
+                {{ $order->seller->payment_instructions ?: 'Diskusikan pembayaran dengan penjual melalui WhatsApp setelah ringkasan pesanan dikirim.' }}
+            </p>
 
             <div class="mt-5 grid aspect-square place-items-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6">
-                @if ($order->seller->qris_path)
+                @if ($order->seller->qris_enabled && $order->seller->qris_path)
                     <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($order->seller->qris_path) }}" alt="QRIS {{ $order->seller->brand_name }}" class="max-h-full max-w-full rounded-2xl object-contain">
                 @else
                     <div class="text-center">
                         <p class="text-3xl font-black text-slate-300">QRIS</p>
-                        <p class="mt-2 text-sm text-slate-500">Penjual belum mengunggah QRIS.</p>
+                        <p class="mt-2 text-sm text-slate-500">QRIS belum aktif. Kirim ringkasan ke WhatsApp penjual untuk konfirmasi pembayaran.</p>
                     </div>
                 @endif
             </div>
 
-            <form method="POST" action="{{ route('orders.payment-proof', $order) }}" enctype="multipart/form-data" class="mt-5">
-                @csrf
-                <label class="block">
-                    <span class="text-sm font-bold text-slate-700">Upload bukti pembayaran</span>
-                    <input type="file" name="payment_proof" required class="mt-2 w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm">
-                </label>
-                <button class="mt-4 w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white hover:bg-slate-800">
-                    Unggah Bukti
-                </button>
-            </form>
+            @if ($order->seller->qris_enabled)
+                <form method="POST" action="{{ route('orders.payment-proof', $order) }}" enctype="multipart/form-data" class="mt-5">
+                    @csrf
+                    <label class="block">
+                        <span class="text-sm font-bold text-slate-700">Upload bukti pembayaran</span>
+                        <input type="file" name="payment_proof" required class="mt-2 w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm">
+                    </label>
+                    <button class="mt-4 w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white hover:bg-slate-800">
+                        Unggah Bukti
+                    </button>
+                </form>
+            @endif
         </aside>
     </section>
 </x-layouts.app>

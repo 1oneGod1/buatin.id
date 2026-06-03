@@ -69,4 +69,78 @@
             </div>
         </div>
     </section>
+
+    <section class="bg-white">
+        <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+                <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700">Problem yang diselesaikan</p>
+                <h2 class="mt-3 text-3xl font-black text-slate-950">Brief custom tidak perlu tercecer di chat.</h2>
+                <p class="mt-4 text-base leading-7 text-slate-600">
+                    Buatin.id membantu penjual mengubah chat yang berantakan menjadi satu alur order yang rapi: katalog, form brief, upload referensi, estimasi awal, QRIS, dan status pesanan.
+                </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+                @foreach ([
+                    ['Chat bolak-balik', 'Pelanggan mengisi brief lengkap sejak awal.'],
+                    ['Salah paham detail', 'Produk acuan dan tipe pesanan dipisahkan dengan jelas.'],
+                    ['Pembayaran manual', 'QRIS dan upload bukti ada di ringkasan pesanan.'],
+                    ['Status tidak jelas', 'Pembeli bisa cek progres dari kode order.'],
+                ] as [$title, $copy])
+                    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                        <p class="font-black text-slate-950">{{ $title }}</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-600">{{ $copy }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 py-12">
+        <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+                <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700">Alur utama</p>
+                <h2 class="mt-3 text-3xl font-black text-slate-950">Dari link toko sampai order diproses.</h2>
+            </div>
+            <a href="{{ route('seller.start', ['new' => 1]) }}" class="rounded-full bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700">Coba buat toko</a>
+        </div>
+        <div class="mt-7 grid gap-4 md:grid-cols-4">
+            @foreach ([
+                ['1', 'Buat toko', 'Isi profil brand, WhatsApp, dan deskripsi usaha.'],
+                ['2', 'Tambah produk', 'Masukkan produk acuan, tipe, harga awal, dan foto.'],
+                ['3', 'Terima brief', 'Pelanggan mengisi form custom dan upload referensi.'],
+                ['4', 'Kelola order', 'Pantau pembayaran, WhatsApp, dan status produksi.'],
+            ] as [$num, $title, $copy])
+                <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="grid size-10 place-items-center rounded-2xl bg-emerald-100 font-black text-emerald-700">{{ $num }}</div>
+                    <p class="mt-5 text-lg font-black text-slate-950">{{ $title }}</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">{{ $copy }}</p>
+                </div>
+            @endforeach
+        </div>
+    </section>
+
+    <section class="bg-slate-950 text-white">
+        <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 lg:grid-cols-[1fr_1fr]">
+            <div>
+                <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-300">Freemium MVP</p>
+                <h2 class="mt-3 text-3xl font-black">Mulai gratis, upgrade saat order mulai ramai.</h2>
+                <p class="mt-4 text-sm leading-7 text-slate-300">
+                    Model bisnis Buatin.id dibuat bertahap. Pelaku usaha bisa mencoba fitur inti gratis, lalu memakai paket berbayar untuk branding, katalog lebih banyak, dan operasional order yang lebih lengkap.
+                </p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-3">
+                @foreach ([
+                    ['Free', 'Rp0', 'Validasi usaha'],
+                    ['Starter', 'Rp29rb', 'Order aktif'],
+                    ['Pro', 'Rp79rb', 'Brand profesional'],
+                ] as [$name, $price, $tag])
+                    <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
+                        <p class="text-sm font-black text-emerald-300">{{ $name }}</p>
+                        <p class="mt-3 text-3xl font-black">{{ $price }}</p>
+                        <p class="mt-2 text-sm text-slate-300">{{ $tag }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 </x-layouts.app>

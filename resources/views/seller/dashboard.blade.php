@@ -1,5 +1,15 @@
 <x-layouts.app title="Dashboard Seller - Buatin.id">
     <section class="mx-auto max-w-6xl px-4 py-8">
+        @php
+            $setupItems = [
+                ['Profil toko', filled($seller->brand_name) && filled($seller->whatsapp), route('seller.page-builder')],
+                ['Produk katalog', $seller->products->count() > 0, route('seller.products.index')],
+                ['Form brief', filled($seller->form_fields), route('seller.form-builder')],
+                ['QRIS pembayaran', $seller->qris_enabled && filled($seller->qris_path), route('seller.payment')],
+                ['Link publik', true, route('public.store', $seller)],
+            ];
+            $completedSetup = collect($setupItems)->where(1, true)->count();
+        @endphp
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
                 <p class="text-sm font-bold text-emerald-700">Seller Dashboard</p>
@@ -10,6 +20,26 @@
                 <a href="{{ route('public.store', $seller) }}" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700">Lihat halaman publik</a>
                 <a href="{{ route('seller.products.index') }}" class="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800">Tambah produk custom</a>
                 <a href="{{ route('seller.page-builder') }}" class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white">Edit halaman</a>
+            </div>
+        </div>
+
+        <div class="mt-8 rounded-[1.5rem] border border-emerald-100 bg-white p-5 shadow-sm">
+            <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                <div>
+                    <p class="text-sm font-black uppercase tracking-wide text-emerald-700">Setup toko</p>
+                    <h2 class="mt-1 text-2xl font-black text-slate-950">{{ $completedSetup }}/{{ count($setupItems) }} langkah siap</h2>
+                </div>
+                <div class="h-3 overflow-hidden rounded-full bg-slate-100 md:w-72">
+                    <div class="h-full rounded-full bg-emerald-600" style="width: {{ ($completedSetup / count($setupItems)) * 100 }}%"></div>
+                </div>
+            </div>
+            <div class="mt-5 grid gap-3 md:grid-cols-5">
+                @foreach ($setupItems as [$label, $done, $url])
+                    <a href="{{ $url }}" class="rounded-2xl border p-4 text-sm font-bold {{ $done ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-slate-50 text-slate-600' }}">
+                        <span class="mb-2 grid size-7 place-items-center rounded-full {{ $done ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500' }}">{{ $done ? '✓' : $loop->iteration }}</span>
+                        {{ $label }}
+                    </a>
+                @endforeach
             </div>
         </div>
 

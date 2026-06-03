@@ -22,6 +22,12 @@
                     Gunakan produk sebagai pilihan acuan di form order. Pembeli tetap bisa menulis detail custom sesuai kebutuhan.
                 </p>
 
+                @if ($seller->productLimit())
+                    <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-900">
+                        Paket {{ $seller->planLabel() }} mendukung maksimal {{ $seller->productLimit() }} produk. Saat ini ada {{ $seller->products->count() }} produk.
+                    </div>
+                @endif
+
                 <div class="mt-5 grid gap-4">
                     <label class="block">
                         <span class="text-sm font-bold text-slate-700">Nama produk di katalog</span>
@@ -61,9 +67,15 @@
                     </label>
                 </div>
 
-                <button class="mt-6 w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-sm hover:bg-emerald-700">
-                    Tambah Produk Custom
-                </button>
+                @if ($seller->canAddProduct())
+                    <button class="mt-6 w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-black text-white shadow-sm hover:bg-emerald-700">
+                        Tambah Produk Custom
+                    </button>
+                @else
+                    <a href="{{ route('seller.subscription') }}" class="mt-6 block rounded-full bg-slate-950 px-5 py-3 text-center text-sm font-black text-white hover:bg-slate-800">
+                        Upgrade untuk tambah produk
+                    </a>
+                @endif
             </form>
 
             <div class="space-y-4">

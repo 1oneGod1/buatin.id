@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
                 'payment_account' => 'QRIS Demo Disyan 3D Studio',
                 'payment_instructions' => 'Scan QRIS demo ini, lalu upload bukti pembayaran untuk melanjutkan pesanan.',
                 'qris_enabled' => true,
+                'plan' => 'starter',
+                'subscription_status' => 'active',
                 'form_fields' => [
                     'material' => true,
                     'size' => true,
@@ -54,6 +56,13 @@ class DatabaseSeeder extends Seeder
 
         if ($seller->whatsapp !== '082260638053') {
             $seller->update(['whatsapp' => '082260638053']);
+        }
+
+        if (($seller->plan ?? 'free') === 'free') {
+            $seller->update([
+                'plan' => 'starter',
+                'subscription_status' => 'active',
+            ]);
         }
 
         if (! $seller->qris_path) {

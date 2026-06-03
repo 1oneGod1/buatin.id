@@ -42,6 +42,22 @@
                     {{ $isSellerArea ? 'Toko Publik' : 'Mulai Gratis' }}
                 </a>
             </div>
+            <div class="border-t border-slate-100 md:hidden">
+                <nav class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-2 text-xs font-bold text-slate-600">
+                    @if ($isSellerArea)
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.dashboard') }}">Dashboard</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.products.index') }}">Produk</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.form-builder') }}">Form</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.payment') }}">QRIS</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.subscription') }}">Paket</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.orders.index') }}">Order</a>
+                    @else
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('seller.start') }}">Contoh Toko</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('orders.lookup') }}">Cek Status</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.dashboard') }}">Untuk Penjual</a>
+                    @endif
+                </nav>
+            </div>
         </header>
 
         <main>
@@ -68,6 +84,19 @@
 
             {{ $slot }}
         </main>
+
+        <footer class="mt-12 border-t border-slate-200 bg-white">
+            <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+                <p><strong class="text-emerald-700">Buatin.id</strong> - custom order page builder untuk UMKM kreatif.</p>
+                <div class="flex flex-wrap gap-3 font-semibold">
+                    <a href="{{ route('seller.start', ['new' => 1]) }}" class="hover:text-emerald-700">Mulai Gratis</a>
+                    @if ($demoSeller)
+                        <a href="{{ route('public.store', $demoSeller) }}" class="hover:text-emerald-700">Contoh Toko</a>
+                    @endif
+                    <a href="{{ route('orders.lookup') }}" class="hover:text-emerald-700">Cek Status</a>
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
 </html>

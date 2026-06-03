@@ -72,6 +72,43 @@ it('lets a seller add a custom product to the public catalog and order form', fu
         ->assertSee('Lampu nama custom');
 });
 
+it('limits free sellers to three products before upgrade', function () {
+    $this->seed();
+
+    $seller = Seller::create([
+        'brand_name' => 'Stiker Custom Andi',
+        'slug' => 'stiker-custom-andi',
+        'category' => 'Stiker custom',
+        'whatsapp' => '082260638053',
+        'plan' => 'free',
+        'subscription_status' => 'active',
+    ]);
+    session(['seller_id' => $seller->id]);
+
+    foreach (['Produk 1', 'Produk 2', 'Produk 3'] as $name) {
+        $seller->products()->create([
+            'name' => $name,
+            'category' => 'Stiker',
+            'description' => 'Produk test',
+            'starting_price' => 10000,
+            'is_featured' => true,
+        ]);
+    }
+
+    $this->post(route('seller.products.store'), [
+        'name' => 'Produk 4',
+        'category' => 'Stiker',
+        'description' => 'Produk tambahan',
+        'starting_price' => 15000,
+        'is_featured' => '1',
+    ])->assertSessionHasErrors('name');
+
+    $this->assertDatabaseMissing('products', [
+        'seller_id' => $seller->id,
+        'name' => 'Produk 4',
+    ]);
+});
+
 it('lets a customer submit a custom order and view the summary', function () {
     $this->seed();
 

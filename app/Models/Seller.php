@@ -68,6 +68,21 @@ class Seller extends Model
         ][$this->plan ?? 'free'] ?? 'Free';
     }
 
+    public function productLimit(): ?int
+    {
+        return match ($this->plan ?? 'free') {
+            'free' => 3,
+            default => null,
+        };
+    }
+
+    public function canAddProduct(): bool
+    {
+        $limit = $this->productLimit();
+
+        return $limit === null || $this->products()->count() < $limit;
+    }
+
     protected function publicUrl(): Attribute
     {
         return Attribute::get(fn () => url($this->slug));

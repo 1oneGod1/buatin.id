@@ -29,6 +29,13 @@ class SellerProductController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $seller = $this->seller();
+
+        if (! $seller->canAddProduct()) {
+            return back()
+                ->withErrors(['name' => 'Paket Free hanya mendukung maksimal 3 produk. Upgrade ke Starter untuk menambah produk lagi.'])
+                ->withInput();
+        }
+
         $validated = $this->validateProduct($request);
 
         if ($request->hasFile('image')) {
