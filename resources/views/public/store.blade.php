@@ -1,107 +1,145 @@
 <x-layouts.app :title="$seller->brand_name.' | Buatin.id'">
     <section class="bg-white">
-        <div class="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-12">
-            <div>
-                <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800">
-                    {{ $seller->category }}
-                </div>
-                <h1 class="max-w-2xl text-4xl font-black leading-tight text-slate-950 md:text-5xl">
-                    {{ $seller->brand_name }}
-                </h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
-                    {{ $seller->description }}
-                </p>
-                <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('public.order.create', $seller) }}" class="rounded-full bg-emerald-600 px-5 py-3 text-center text-sm font-bold text-white shadow-sm hover:bg-emerald-700">
-                        Buat Pesanan Custom
-                    </a>
-                    <a href="{{ route('orders.lookup') }}" class="rounded-full border border-slate-300 bg-white px-5 py-3 text-center text-sm font-bold text-slate-700 hover:bg-slate-50">
-                        Cek Status Pesanan
-                    </a>
-                </div>
-                <div class="mt-6 grid max-w-xl grid-cols-2 gap-3 text-sm">
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <p class="font-bold text-slate-950">Lokasi</p>
-                        <p class="mt-1 text-slate-600">{{ $seller->location ?: 'Indonesia' }}</p>
+        <div class="mx-auto max-w-6xl px-4 py-8 lg:py-12">
+            <div class="grid gap-8 lg:grid-cols-[1fr_440px] lg:items-center">
+                <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 text-sm font-bold">
+                        <span class="rounded-lg bg-emerald-50 px-3 py-2 text-emerald-800">{{ $seller->category }}</span>
+                        <span class="rounded-lg bg-sky-50 px-3 py-2 text-sky-800">{{ $seller->location ?: 'Indonesia' }}</span>
                     </div>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <p class="font-bold text-slate-950">Kontak</p>
-                        <p class="mt-1 text-slate-600">{{ $seller->whatsapp }}</p>
+                    <h1 class="mt-5 max-w-3xl break-words text-4xl font-black leading-tight text-slate-950 md:text-5xl">
+                        {{ $seller->brand_name }}
+                    </h1>
+                    <p class="mt-4 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
+                        {{ $seller->description }}
+                    </p>
+                    <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+                        <a href="{{ route('public.order.create', $seller) }}" class="rounded-lg bg-slate-950 px-5 py-3 text-center text-sm font-black text-white shadow-sm hover:bg-slate-800">
+                            Buat Brief Pesanan
+                        </a>
+                        <a href="{{ route('orders.lookup') }}" class="rounded-lg border border-slate-300 bg-white px-5 py-3 text-center text-sm font-black text-slate-800 hover:border-slate-400">
+                            Cek Status Order
+                        </a>
+                    </div>
+                    <div class="mt-7 grid max-w-2xl gap-3 sm:grid-cols-3">
+                        @foreach ([
+                            ['Produk acuan', $seller->products->count().' pilihan'],
+                            ['Kontak penjual', $seller->whatsapp],
+                            ['Pembayaran', $seller->qris_enabled ? 'QRIS tersedia' : 'Konfirmasi WA'],
+                        ] as [$label, $value])
+                            <div class="border-l-4 border-emerald-500 bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-black uppercase text-slate-500">{{ $label }}</p>
+                                <p class="mt-1 text-sm font-black text-slate-950">{{ $value }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
 
-            <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 shadow-xl">
-                @if ($seller->banner_path)
-                    <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($seller->banner_path) }}" alt="Banner {{ $seller->brand_name }}" class="h-72 w-full object-cover">
-                @else
-                    <div class="grid h-72 place-items-center bg-[radial-gradient(circle_at_top_left,#34d399,transparent_35%),linear-gradient(135deg,#0f172a,#164e63)] px-8 text-center text-white">
-                        <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-100">Portfolio Preview</p>
-                            <p class="mt-3 text-3xl font-black">{{ $seller->brand_name }}</p>
-                            <p class="mt-3 text-sm leading-6 text-slate-200">Tampilkan contoh produk, brief pelanggan, dan pembayaran dalam satu halaman.</p>
+                <aside class="min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-950 shadow-xl shadow-slate-900/10">
+                    <div class="relative h-64 bg-slate-900">
+                        @if ($seller->banner_path)
+                            <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($seller->banner_path) }}" alt="Banner {{ $seller->brand_name }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="grid h-full place-items-center bg-slate-900 px-8 text-center text-white">
+                                <div>
+                                    <p class="text-sm font-black uppercase text-emerald-200">Portfolio Preview</p>
+                                    <p class="mt-3 text-3xl font-black">{{ $seller->brand_name }}</p>
+                                    <p class="mt-3 text-sm leading-6 text-slate-300">Contoh produk, brief, pembayaran, dan status dalam satu halaman.</p>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="absolute bottom-4 left-4 right-4 rounded-lg bg-white/95 p-4 shadow-lg backdrop-blur">
+                            <p class="text-xs font-black uppercase text-slate-500">Order custom dimulai dari</p>
+                            <p class="mt-1 text-lg font-black text-slate-950">{{ $seller->products->first()?->name ?: 'Brief produk custom' }}</p>
                         </div>
                     </div>
-                @endif
-                <div class="grid grid-cols-3 gap-px bg-slate-800">
-                    @foreach ($seller->products->take(3) as $product)
-                        <div class="bg-white p-4">
-                            <p class="text-xs font-bold uppercase text-emerald-700">{{ $product->category }}</p>
-                            <p class="mt-1 line-clamp-2 text-sm font-bold text-slate-950">{{ $product->name }}</p>
-                        </div>
-                    @endforeach
-                </div>
+                    <div class="grid grid-cols-3 divide-x divide-slate-800 bg-slate-950 text-white">
+                        @foreach ($seller->products->take(3) as $product)
+                            <div class="p-4">
+                                <p class="text-xs font-black text-emerald-300">{{ $product->category }}</p>
+                                <p class="mt-1 line-clamp-2 text-sm font-bold text-white">{{ $product->name }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </aside>
             </div>
+        </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto grid max-w-6xl gap-4 px-4 py-7 md:grid-cols-4">
+            @foreach ([
+                ['Pilih acuan', 'Ambil contoh produk dari katalog.'],
+                ['Isi tipe custom', 'Jelaskan jenis pesanan yang mau dibuat.'],
+                ['Kirim brief', 'Sertakan ukuran, bahan, warna, dan referensi.'],
+                ['Pantau status', 'Cek pembayaran dan progres order.'],
+            ] as [$title, $copy])
+                <div class="flex gap-3">
+                    <div class="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-sm font-black text-emerald-700 ring-1 ring-slate-200">{{ $loop->iteration }}</div>
+                    <div>
+                        <p class="font-black text-slate-950">{{ $title }}</p>
+                        <p class="mt-1 text-sm leading-6 text-slate-600">{{ $copy }}</p>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </section>
 
     <section class="mx-auto max-w-6xl px-4 py-10">
         <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-                <p class="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700">Katalog & Portfolio</p>
-                <h2 class="mt-2 text-3xl font-black text-slate-950">Contoh produk yang bisa dipesan</h2>
+                <p class="text-sm font-black uppercase text-emerald-700">Katalog & Portfolio</p>
+                <h2 class="mt-2 text-3xl font-black text-slate-950">Pilih produk acuan, lalu custom sesuai kebutuhan.</h2>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Produk di bawah hanya titik awal. Detail akhir tetap bisa kamu tulis di form brief.</p>
             </div>
-            <a href="{{ route('public.order.create', $seller) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-800">Mulai dari brief custom</a>
+            <a href="{{ route('public.order.create', $seller) }}" class="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700">Mulai Brief Custom</a>
         </div>
 
-        <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <div class="mt-7 grid gap-5 md:grid-cols-3">
             @forelse ($seller->products as $product)
-                <article class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                <article class="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="grid aspect-[4/3] place-items-center bg-slate-100">
                         @if ($product->image_path)
-                            <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($product->image_path) }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
+                            <img src="{{ app(\App\Services\Firebase\FirebaseStorageService::class)->url($product->image_path) }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
                         @else
                             <div class="px-6 text-center">
-                                <p class="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">{{ $product->category }}</p>
-                                <p class="mt-2 text-xl font-black text-slate-800">{{ $product->name }}</p>
+                                <p class="text-sm font-black uppercase text-slate-500">{{ $product->category }}</p>
+                                <p class="mt-2 text-2xl font-black text-slate-800">{{ $product->name }}</p>
                             </div>
                         @endif
                     </div>
                     <div class="p-5">
-                        <p class="text-lg font-black text-slate-950">{{ $product->name }}</p>
-                        <p class="mt-2 min-h-12 text-sm leading-6 text-slate-600">{{ $product->description }}</p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <p class="text-sm text-slate-500">Mulai dari</p>
-                            <p class="text-base font-black text-emerald-700">Rp{{ number_format($product->starting_price, 0, ',', '.') }}</p>
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-xs font-black uppercase text-emerald-700">{{ $product->category }}</p>
+                                <h3 class="mt-1 text-lg font-black text-slate-950">{{ $product->name }}</h3>
+                            </div>
+                            <p class="shrink-0 rounded-lg bg-amber-50 px-3 py-2 text-sm font-black text-amber-800">Rp{{ number_format($product->starting_price, 0, ',', '.') }}+</p>
                         </div>
+                        <p class="mt-3 min-h-12 text-sm leading-6 text-slate-600">{{ $product->description }}</p>
+                        <a href="{{ route('public.order.create', $seller) }}" class="mt-5 inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-3 text-sm font-black text-slate-800 hover:border-emerald-400 hover:text-emerald-700">
+                            Pesan tipe ini
+                        </a>
                     </div>
                 </article>
             @empty
-                <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600 md:col-span-3">
+                <div class="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600 md:col-span-3">
                     Portfolio belum diisi oleh penjual.
                 </div>
             @endforelse
         </div>
     </section>
 
-    <section class="bg-slate-100">
-        <div class="mx-auto grid max-w-6xl gap-4 px-4 py-10 md:grid-cols-4">
-            @foreach (['Isi brief custom', 'Lihat estimasi awal', 'Bayar via QRIS', 'Pantau status'] as $step)
-                <div class="rounded-3xl border border-slate-200 bg-white p-5">
-                    <p class="text-sm font-bold text-emerald-700">Langkah {{ $loop->iteration }}</p>
-                    <p class="mt-2 text-lg font-black text-slate-950">{{ $step }}</p>
-                </div>
-            @endforeach
+    <section class="bg-slate-950 text-white">
+        <div class="mx-auto grid max-w-6xl gap-6 px-4 py-10 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+                <p class="text-sm font-black uppercase text-emerald-300">Siap mulai?</p>
+                <h2 class="mt-2 text-3xl font-black">Kirim brief lengkap agar estimasi lebih cepat dihitung.</h2>
+                <p class="mt-3 text-sm leading-6 text-slate-300">Cocok untuk pesanan 3D print, merchandise, hampers, sablon, stiker, kue custom, dan jasa kreatif lain.</p>
+            </div>
+            <a href="{{ route('public.order.create', $seller) }}" class="rounded-lg bg-white px-6 py-4 text-center text-sm font-black text-slate-950 hover:bg-emerald-50">
+                Isi Form Pesanan
+            </a>
         </div>
     </section>
 </x-layouts.app>

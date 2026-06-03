@@ -33,7 +33,7 @@
                     <ul class="mt-5 flex-1 space-y-3 text-sm text-slate-700">
                         @foreach ($plan['features'] as $feature)
                             <li class="flex gap-2">
-                                <span class="mt-0.5 grid size-5 place-items-center rounded-full bg-emerald-100 text-xs font-black text-emerald-700">✓</span>
+                                <span class="mt-0.5 grid size-5 place-items-center rounded-full bg-emerald-100 text-xs font-black text-emerald-700">OK</span>
                                 <span>{{ $feature }}</span>
                             </li>
                         @endforeach

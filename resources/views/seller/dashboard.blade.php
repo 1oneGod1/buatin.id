@@ -36,7 +36,7 @@
             <div class="mt-5 grid gap-3 md:grid-cols-5">
                 @foreach ($setupItems as [$label, $done, $url])
                     <a href="{{ $url }}" class="rounded-2xl border p-4 text-sm font-bold {{ $done ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-slate-50 text-slate-600' }}">
-                        <span class="mb-2 grid size-7 place-items-center rounded-full {{ $done ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500' }}">{{ $done ? '✓' : $loop->iteration }}</span>
+                        <span class="mb-2 grid size-7 place-items-center rounded-full {{ $done ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500' }}">{{ $done ? 'OK' : $loop->iteration }}</span>
                         {{ $label }}
                     </a>
                 @endforeach
