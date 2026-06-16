@@ -1,9 +1,18 @@
 #!/usr/bin/env sh
 set -e
 
+APP_KEY_FILE="/var/www/html/storage/app/.appkey"
+
 if [ -z "$APP_KEY" ]; then
-    echo "APP_KEY is missing; generating an ephemeral key for this instance."
-    export APP_KEY="$(php artisan key:generate --show --no-ansi)"
+    if [ -f "$APP_KEY_FILE" ]; then
+        echo "APP_KEY is missing; reusing the persisted key from a previous boot."
+        export APP_KEY="$(cat "$APP_KEY_FILE")"
+    else
+        echo "APP_KEY is missing; generating a key and persisting it for future boots."
+        export APP_KEY="$(php artisan key:generate --show --no-ansi)"
+        mkdir -p "$(dirname "$APP_KEY_FILE")"
+        printf '%s' "$APP_KEY" > "$APP_KEY_FILE"
+    fi
 fi
 
 if [ -z "${APP_URL:-}" ] && [ -n "${RENDER_EXTERNAL_URL:-}" ]; then
