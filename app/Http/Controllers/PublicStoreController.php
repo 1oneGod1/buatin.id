@@ -9,6 +9,8 @@ class PublicStoreController extends Controller
 {
     public function show(Seller $seller): View
     {
+        $seller->increment('views');
+
         return view('public.store', [
             'seller' => $seller->load(['products' => fn ($query) => $query->where('is_featured', true)]),
         ]);

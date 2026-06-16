@@ -43,8 +43,8 @@
             </div>
         </div>
 
-        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach ([['Produk', $stats['products'], 'Tampil di katalog'], ['Order baru', $stats['new_orders'], 'Perlu diproses'], ['Belum bayar', $stats['pending_payment'], 'Follow up pembeli'], ['Selesai', $stats['completed'], 'Bulan ini']] as [$label, $value, $hint])
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            @foreach ([['Kunjungan', $stats['visits'], 'Halaman publik dibuka'], ['Produk', $stats['products'], 'Tampil di katalog'], ['Order baru', $stats['new_orders'], 'Perlu diproses'], ['Belum bayar', $stats['pending_payment'], 'Follow up pembeli'], ['Selesai', $stats['completed'], 'Bulan ini']] as [$label, $value, $hint])
                 <div class="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <p class="text-xs font-black uppercase tracking-wide text-slate-500">{{ $label }}</p>
                     <p class="mt-3 text-4xl font-black {{ $label === 'Order baru' ? 'text-emerald-600' : ($label === 'Belum bayar' ? 'text-red-600' : 'text-slate-950') }}">{{ $value }}</p>

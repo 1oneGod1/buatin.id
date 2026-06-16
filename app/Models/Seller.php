@@ -24,6 +24,7 @@ use Illuminate\Support\Str;
     'form_fields',
     'plan',
     'subscription_status',
+    'views',
 ])]
 class Seller extends Model
 {
@@ -32,6 +33,7 @@ class Seller extends Model
         return [
             'qris_enabled' => 'boolean',
             'form_fields' => 'array',
+            'views' => 'integer',
         ];
     }
 
