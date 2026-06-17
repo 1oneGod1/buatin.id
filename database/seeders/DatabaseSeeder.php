@@ -19,17 +19,23 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'Test User',
+                'name' => 'Disyan 3D Studio',
                 'password' => bcrypt('password'),
+                'email_verified_at' => now(),
             ],
         );
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->forceFill(['email_verified_at' => now()])->save();
+        }
 
         $seller = Seller::firstOrCreate(
             ['slug' => 'disyanz3d'],
             [
+                'user_id' => $user->id,
                 'brand_name' => 'Disyan 3D Studio',
                 'category' => 'Jasa desain & cetak 3D',
                 'whatsapp' => '082260638053',
@@ -53,6 +59,10 @@ class DatabaseSeeder extends Seeder
                 ],
             ],
         );
+
+        if (! $seller->user_id) {
+            $seller->update(['user_id' => $user->id]);
+        }
 
         if ($seller->whatsapp !== '082260638053') {
             $seller->update(['whatsapp' => '082260638053']);

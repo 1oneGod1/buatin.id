@@ -14,11 +14,11 @@ class SellerOnboardingController extends Controller
 
     public function create(Request $request): View
     {
-        $isCreatingNew = $request->boolean('new');
+        $seller = $request->user()->seller;
 
         return view('seller.onboarding', [
-            'seller' => $isCreatingNew ? null : (session('seller_id') ? Seller::find(session('seller_id')) : Seller::first()),
-            'isCreatingNew' => $isCreatingNew,
+            'seller' => $seller,
+            'isCreatingNew' => $seller === null,
         ]);
     }
 
@@ -32,19 +32,28 @@ class SellerOnboardingController extends Controller
             'description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $seller = $request->boolean('create_new') ? null : (session('seller_id') ? Seller::find(session('seller_id')) : null);
+        $seller = $request->user()->seller;
 
         if ($seller) {
             $seller->update($validated);
         } else {
+            $validated['user_id'] = $request->user()->id;
             $validated['slug'] = Seller::makeSlug($validated['brand_name']);
-            $validated['form_fields'] = Seller::first()?->enabledFields();
+            $validated['form_fields'] = [
+                'material' => true,
+                'size' => true,
+                'color' => true,
+                'quantity' => true,
+                'deadline' => true,
+                'budget' => true,
+                'reference' => true,
+                'notes' => true,
+            ];
             $validated['plan'] = 'free';
             $validated['subscription_status'] = 'active';
             $seller = Seller::create($validated);
         }
 
-        session(['seller_id' => $seller->id]);
         $this->firebase->seller($seller->fresh());
 
         return redirect()->route('seller.dashboard')->with('status', 'Profil usaha berhasil disimpan.');

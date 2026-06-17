@@ -12,11 +12,12 @@
 <body class="overflow-x-hidden bg-slate-50 text-slate-900 antialiased">
     @php
         $isSellerArea = request()->routeIs('seller.*');
-        $demoSeller = \App\Models\Seller::query()->first();
-        $sessionSeller = session('seller_id') ? \App\Models\Seller::find(session('seller_id')) : null;
+        $authUser = auth()->user();
+        $mySeller = $authUser?->seller;
+        $demoSeller = \App\Models\Seller::query()->oldest('id')->first();
         $currentSeller = request()->route('seller') instanceof \App\Models\Seller
             ? request()->route('seller')
-            : ($sessionSeller ?: $demoSeller);
+            : ($mySeller ?: $demoSeller);
     @endphp
     <div class="min-h-screen">
         <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/90 backdrop-blur">
@@ -35,15 +36,35 @@
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.subscription') }}">Paket</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.orders.index') }}">Order</a>
                     @else
-                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('seller.start') }}">Contoh Toko</a>
+                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('register') }}">Contoh Toko</a>
                         <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('orders.lookup') }}">Cek Status</a>
-                        <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Untuk Penjual</a>
+                        @auth
+                            <a class="rounded-full px-3 py-2 hover:bg-slate-100" href="{{ route('seller.dashboard') }}">Dashboard</a>
+                        @endauth
                     @endif
                 </nav>
-                <a href="{{ $isSellerArea && $currentSeller ? route('public.store', $currentSeller) : route('seller.start', ['new' => 1]) }}" class="shrink-0 rounded-full bg-emerald-600 px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 sm:px-4">
-                    <span class="hidden sm:inline">{{ $isSellerArea ? 'Toko Publik' : 'Mulai Gratis' }}</span>
-                    <span class="sm:hidden">{{ $isSellerArea ? 'Toko' : 'Mulai' }}</span>
-                </a>
+                <div class="flex shrink-0 items-center gap-2">
+                    @auth
+                        @if ($isSellerArea && $currentSeller)
+                            <a href="{{ route('public.store', $currentSeller) }}" class="rounded-full bg-emerald-600 px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 sm:px-4">
+                                <span class="hidden sm:inline">Toko Publik</span>
+                                <span class="sm:hidden">Toko</span>
+                            </a>
+                        @elseif (! $isSellerArea)
+                            <a href="{{ route('seller.dashboard') }}" class="rounded-full bg-emerald-600 px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 sm:px-4">Dashboard</a>
+                        @endif
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="rounded-full border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100">Keluar</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="rounded-full px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100">Masuk</a>
+                        <a href="{{ route('register') }}" class="rounded-full bg-emerald-600 px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 sm:px-4">
+                            <span class="hidden sm:inline">Mulai Gratis</span>
+                            <span class="sm:hidden">Mulai</span>
+                        </a>
+                    @endauth
+                </div>
             </div>
             <div class="border-t border-slate-100 md:hidden">
                 <nav class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-2 text-xs font-bold text-slate-600">
@@ -55,9 +76,11 @@
                         <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.subscription') }}">Paket</a>
                         <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.orders.index') }}">Order</a>
                     @else
-                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('seller.start') }}">Contoh Toko</a>
+                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ $demoSeller ? route('public.store', $demoSeller) : route('register') }}">Contoh Toko</a>
                         <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('orders.lookup') }}">Cek Status</a>
-                        <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.dashboard') }}">Untuk Penjual</a>
+                        @auth
+                            <a class="shrink-0 rounded-full bg-slate-100 px-3 py-2" href="{{ route('seller.dashboard') }}">Dashboard</a>
+                        @endauth
                     @endif
                 </nav>
             </div>
@@ -92,7 +115,7 @@
             <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
                 <p><strong class="text-emerald-700">Buatin.id</strong> - custom order page builder untuk UMKM kreatif.</p>
                 <div class="flex flex-wrap gap-3 font-semibold">
-                    <a href="{{ route('seller.start', ['new' => 1]) }}" class="hover:text-emerald-700">Mulai Gratis</a>
+                    <a href="{{ route('register') }}" class="hover:text-emerald-700">Mulai Gratis</a>
                     @if ($demoSeller)
                         <a href="{{ route('public.store', $demoSeller) }}" class="hover:text-emerald-700">Contoh Toko</a>
                     @endif

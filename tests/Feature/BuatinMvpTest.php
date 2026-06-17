@@ -2,14 +2,15 @@
 
 use App\Models\CustomOrder;
 use App\Models\Seller;
+use App\Models\User;
 
-it('lets a seller create a new public store without overwriting the demo store', function () {
+it('lets a new account create its own store without touching the demo store', function () {
     $this->seed();
 
     $demo = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $newUser = User::factory()->create();
 
-    $this->post(route('seller.start.store'), [
-        'create_new' => '1',
+    $this->actingAs($newUser)->post(route('seller.start.store'), [
         'brand_name' => 'Kue Custom Andi',
         'category' => 'Kue custom',
         'whatsapp' => '082260638053',
@@ -20,16 +21,34 @@ it('lets a seller create a new public store without overwriting the demo store',
     $demo->refresh();
 
     expect($demo->brand_name)->toBe('Disyan 3D Studio')
-        ->and(Seller::where('slug', 'kue-custom-andi')->exists())->toBeTrue();
+        ->and($demo->user_id)->not->toBe($newUser->id)
+        ->and(Seller::where('slug', 'kue-custom-andi')->where('user_id', $newUser->id)->exists())->toBeTrue();
+});
+
+it('requires login before reaching the seller dashboard', function () {
+    $this->seed();
+
+    $this->get(route('seller.dashboard'))->assertRedirect(route('login'));
+});
+
+it('only resolves the store owned by the logged-in account', function () {
+    $this->seed();
+
+    $demo = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $strangerWithoutStore = User::factory()->create();
+
+    // A logged-in account with no store of its own must not fall through to the demo store.
+    $this->actingAs($strangerWithoutStore)
+        ->get(route('seller.dashboard'))
+        ->assertRedirect(route('seller.start'));
 });
 
 it('lets a seller select a subscription plan for the freemium MVP', function () {
     $this->seed();
 
     $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
-    session(['seller_id' => $seller->id]);
 
-    $this->post(route('seller.subscription.update'), [
+    $this->actingAs($seller->user)->post(route('seller.subscription.update'), [
         'plan' => 'starter',
     ])->assertRedirect();
 
@@ -44,7 +63,7 @@ it('lets a seller add a custom product to the public catalog and order form', fu
 
     $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
 
-    $this->post(route('seller.products.store'), [
+    $this->actingAs($seller->user)->post(route('seller.products.store'), [
         'name' => 'Lampu nama custom',
         'category' => 'Merchandise',
         'description' => 'Lampu meja dengan nama dan bentuk custom.',
@@ -75,7 +94,9 @@ it('lets a seller add a custom product to the public catalog and order form', fu
 it('limits free sellers to three products before upgrade', function () {
     $this->seed();
 
+    $user = User::factory()->create();
     $seller = Seller::create([
+        'user_id' => $user->id,
         'brand_name' => 'Stiker Custom Andi',
         'slug' => 'stiker-custom-andi',
         'category' => 'Stiker custom',
@@ -83,7 +104,6 @@ it('limits free sellers to three products before upgrade', function () {
         'plan' => 'free',
         'subscription_status' => 'active',
     ]);
-    session(['seller_id' => $seller->id]);
 
     foreach (['Produk 1', 'Produk 2', 'Produk 3'] as $name) {
         $seller->products()->create([
@@ -95,7 +115,7 @@ it('limits free sellers to three products before upgrade', function () {
         ]);
     }
 
-    $this->post(route('seller.products.store'), [
+    $this->actingAs($user)->post(route('seller.products.store'), [
         'name' => 'Produk 4',
         'category' => 'Stiker',
         'description' => 'Produk tambahan',
@@ -153,7 +173,7 @@ it('lets a seller update order and payment statuses', function () {
         'payment_status' => 'unpaid',
     ]);
 
-    $this->patch(route('seller.orders.update', $order), [
+    $this->actingAs($seller->user)->patch(route('seller.orders.update', $order), [
         'status' => 'processing',
         'payment_status' => 'paid',
     ])->assertRedirect();

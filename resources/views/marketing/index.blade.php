@@ -13,7 +13,7 @@
                 Untuk kreator dan UMKM yang menerima pesanan custom dari chat, katalog, dan form brief dalam satu link.
             </p>
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="{{ route('seller.start', ['new' => 1]) }}" class="rounded-2xl bg-emerald-600 px-6 py-4 text-center font-bold text-white shadow-lg shadow-emerald-900/10 hover:bg-emerald-700">
+                <a href="{{ route('register') }}" class="rounded-2xl bg-emerald-600 px-6 py-4 text-center font-bold text-white shadow-lg shadow-emerald-900/10 hover:bg-emerald-700">
                     Mulai Gratis
                 </a>
                 @if ($seller)
@@ -47,7 +47,7 @@
                 <div class="overflow-hidden rounded-3xl bg-white shadow-sm">
                     <div class="h-48 bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-500 p-5 text-white">
                         <div class="grid size-14 place-items-center rounded-2xl bg-white/15 text-xl font-black">D</div>
-                        <h2 class="mt-8 text-2xl font-black">Omah 3D Print</h2>
+                        <h2 class="mt-8 text-2xl font-black">Disyan 3D Studio</h2>
                         <p class="text-sm text-emerald-50">Mini figure & custom part</p>
                     </div>
                     <div class="space-y-4 p-5">
@@ -61,7 +61,7 @@
                         <div class="rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/50 p-6 text-center text-sm font-semibold text-emerald-700">
                             Upload File Desain (.stl)
                         </div>
-                        <a href="{{ $seller ? route('public.order.create', $seller) : route('seller.start') }}" class="block rounded-2xl bg-emerald-700 px-5 py-4 text-center font-black text-white">
+                        <a href="{{ $seller ? route('public.order.create', $seller) : route('register') }}" class="block rounded-2xl bg-emerald-700 px-5 py-4 text-center font-black text-white">
                             Lanjut ke Pesanan
                         </a>
                     </div>
@@ -101,7 +101,7 @@
                 <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700">Alur utama</p>
                 <h2 class="mt-3 text-3xl font-black text-slate-950">Dari link toko sampai order diproses.</h2>
             </div>
-            <a href="{{ route('seller.start', ['new' => 1]) }}" class="rounded-full bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700">Coba buat toko</a>
+            <a href="{{ route('register') }}" class="rounded-full bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700">Coba buat toko</a>
         </div>
         <div class="mt-7 grid gap-4 md:grid-cols-4">
             @foreach ([

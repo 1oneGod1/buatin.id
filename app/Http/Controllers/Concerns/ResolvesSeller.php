@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Concerns;
 
 use App\Models\Seller;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 trait ResolvesSeller
 {
     protected function seller(): Seller
     {
-        $seller = session('seller_id')
-            ? Seller::find(session('seller_id'))
-            : Seller::first();
+        $seller = auth()->user()?->seller;
 
-        abort_unless($seller, 404, 'Seller demo belum tersedia. Jalankan migrate dan seed terlebih dahulu.');
-
-        session(['seller_id' => $seller->id]);
+        if (! $seller) {
+            throw new HttpResponseException(
+                redirect()->route('seller.start')
+                    ->with('status', 'Lengkapi profil toko dulu untuk mulai berjualan.')
+            );
+        }
 
         return $seller;
     }

@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Seller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class DemoController extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        $seller = Seller::firstOrFail();
+        $seller = Seller::with('user')->firstOrFail();
 
-        session(['seller_id' => $seller->id]);
+        if ($seller->user) {
+            Auth::login($seller->user);
 
-        return redirect()->route('seller.dashboard');
+            return redirect()->route('seller.dashboard')
+                ->with('status', 'Kamu masuk sebagai akun demo Disyan 3D Studio.');
+        }
+
+        return redirect()->route('public.store', $seller);
     }
 }
