@@ -1,4 +1,4 @@
-<x-layouts.app title="Page Builder - Buatin.id">
+<x-layouts.app title="Page Builder - PesanKustom.id">
     <section class="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1fr_420px]">
         <form method="POST" action="{{ route('seller.page-builder.update') }}" enctype="multipart/form-data" class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             @csrf

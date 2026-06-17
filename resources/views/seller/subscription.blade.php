@@ -1,9 +1,9 @@
-<x-layouts.app title="Paket Premium - Buatin.id">
+<x-layouts.app title="Paket Premium - PesanKustom.id">
     <section class="mx-auto max-w-6xl px-4 py-8">
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
                 <p class="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700">Subscription</p>
-                <h1 class="mt-2 text-3xl font-black text-slate-950">Pilih paket Buatin.id</h1>
+                <h1 class="mt-2 text-3xl font-black text-slate-950">Pilih paket PesanKustom.id</h1>
                 <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
                     Untuk MVP, halaman ini dipakai sebagai simulasi model bisnis freemium. Penjual bisa memakai paket Free, lalu upgrade untuk fitur operasional yang lebih lengkap.
                 </p>
@@ -53,7 +53,7 @@
         <div class="mt-8 rounded-[2rem] border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
             <p class="font-black">Catatan MVP</p>
             <p class="mt-1">
-                Integrasi pembayaran subscription dapat dikembangkan setelah validasi. Untuk sekarang, pembayaran pelanggan tetap memakai QRIS penjual, sedangkan halaman ini menunjukkan rencana monetisasi Buatin.id.
+                Integrasi pembayaran subscription dapat dikembangkan setelah validasi. Untuk sekarang, pembayaran pelanggan tetap memakai QRIS penjual, sedangkan halaman ini menunjukkan rencana monetisasi PesanKustom.id.
             </p>
         </div>
     </section>

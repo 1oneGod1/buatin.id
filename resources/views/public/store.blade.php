@@ -1,4 +1,4 @@
-<x-layouts.app :title="$seller->brand_name.' | Buatin.id'">
+<x-layouts.app :title="$seller->brand_name.' | PesanKustom.id'">
     <section class="bg-white">
         <div class="mx-auto max-w-6xl px-4 py-8 lg:py-12">
             <div class="grid gap-8 lg:grid-cols-[1fr_440px] lg:items-center">

@@ -1,4 +1,4 @@
-# Firebase Setup Buatin.id
+# Firebase Setup PesanKustom.id
 
 Firebase dipakai untuk dua hal:
 

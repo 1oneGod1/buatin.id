@@ -1,4 +1,4 @@
-<x-layouts.app title="Buatin.id - Custom Order Manager">
+<x-layouts.app title="PesanKustom.id - Custom Order Manager">
     <section class="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1fr_420px] md:items-center md:py-16">
         <div>
             <div class="mb-5 flex flex-wrap gap-2">
@@ -41,7 +41,7 @@
         <div class="rounded-[2rem] border border-emerald-100 bg-white p-4 shadow-2xl shadow-emerald-900/10">
             <div class="rounded-[1.5rem] bg-slate-50 p-4">
                 <div class="mb-4 flex items-center justify-between text-sm">
-                    <span class="font-bold text-slate-700">buatin.id/disyanz3d</span>
+                    <span class="font-bold text-slate-700">pesankustom.id/disyanz3d</span>
                     <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">LIVE</span>
                 </div>
                 <div class="overflow-hidden rounded-3xl bg-white shadow-sm">
@@ -76,7 +76,7 @@
                 <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-700">Problem yang diselesaikan</p>
                 <h2 class="mt-3 text-3xl font-black text-slate-950">Brief custom tidak perlu tercecer di chat.</h2>
                 <p class="mt-4 text-base leading-7 text-slate-600">
-                    Buatin.id membantu penjual mengubah chat yang berantakan menjadi satu alur order yang rapi: katalog, form brief, upload referensi, estimasi awal, QRIS, dan status pesanan.
+                    PesanKustom.id membantu penjual mengubah chat yang berantakan menjadi satu alur order yang rapi: katalog, form brief, upload referensi, estimasi awal, QRIS, dan status pesanan.
                 </p>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
@@ -125,7 +125,7 @@
                 <p class="text-sm font-black uppercase tracking-[0.16em] text-emerald-300">Freemium MVP</p>
                 <h2 class="mt-3 text-3xl font-black">Mulai gratis, upgrade saat order mulai ramai.</h2>
                 <p class="mt-4 text-sm leading-7 text-slate-300">
-                    Model bisnis Buatin.id dibuat bertahap. Pelaku usaha bisa mencoba fitur inti gratis, lalu memakai paket berbayar untuk branding, katalog lebih banyak, dan operasional order yang lebih lengkap.
+                    Model bisnis PesanKustom.id dibuat bertahap. Pelaku usaha bisa mencoba fitur inti gratis, lalu memakai paket berbayar untuk branding, katalog lebih banyak, dan operasional order yang lebih lengkap.
                 </p>
             </div>
             <div class="grid gap-4 sm:grid-cols-3">

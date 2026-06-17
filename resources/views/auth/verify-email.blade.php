@@ -1,4 +1,4 @@
-<x-layouts.app title="Verifikasi Email - Buatin.id">
+<x-layouts.app title="Verifikasi Email - PesanKustom.id">
     <section class="mx-auto max-w-md px-4 py-10">
         <div class="rounded-[2rem] bg-white p-7 shadow-sm ring-1 ring-slate-200">
             <p class="text-sm font-bold text-emerald-700">Langkah terakhir</p>

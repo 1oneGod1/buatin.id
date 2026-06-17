@@ -14,7 +14,7 @@ class FirebaseSyncCommand extends Command
 {
     protected $signature = 'firebase:sync';
 
-    protected $description = 'Sync Buatin.id sellers, products, and orders to Firebase Firestore.';
+    protected $description = 'Sync PesanKustom.id sellers, products, and orders to Firebase Firestore.';
 
     public function handle(FirebaseCredentials $credentials, FirestoreRestService $firestore, FirebaseSyncService $sync): int
     {

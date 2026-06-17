@@ -1,4 +1,4 @@
-<x-layouts.app title="Setup Brand - Buatin.id">
+<x-layouts.app title="Setup Brand - PesanKustom.id">
     <section class="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_380px]">
         <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             @if ($isCreatingNew ?? true)

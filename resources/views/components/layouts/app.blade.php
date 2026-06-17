@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Buatin.id' }}</title>
+    <title>{{ $title ?? 'PesanKustom.id' }}</title>
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
@@ -23,8 +23,8 @@
         <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/90 backdrop-blur">
             <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 text-xl font-black text-emerald-800">
-                    <span class="grid size-9 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">B</span>
-                    Buatin.id
+                    <span class="grid size-9 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">P</span>
+                    PesanKustom.id
                 </a>
                 <nav class="hidden items-center gap-2 text-sm font-semibold text-slate-600 md:flex">
                     @if ($isSellerArea)
@@ -113,7 +113,7 @@
 
         <footer class="mt-12 border-t border-slate-200 bg-white">
             <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
-                <p><strong class="text-emerald-700">Buatin.id</strong> - custom order page builder untuk UMKM kreatif.</p>
+                <p><strong class="text-emerald-700">PesanKustom.id</strong> - custom order page builder untuk UMKM kreatif.</p>
                 <div class="flex flex-wrap gap-3 font-semibold">
                     <a href="{{ route('register') }}" class="hover:text-emerald-700">Mulai Gratis</a>
                     @if ($demoSeller)

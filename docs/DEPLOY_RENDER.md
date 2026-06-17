@@ -1,6 +1,6 @@
-# Deploy Buatin.id ke Render
+# Deploy PesanKustom.id ke Render
 
-Panduan ini dipakai untuk membuat link online Buatin.id agar bisa dipakai usability testing.
+Panduan ini dipakai untuk membuat link online PesanKustom.id agar bisa dipakai usability testing.
 
 ## Persiapan
 
@@ -34,13 +34,13 @@ Output panjang dari command itu nanti dipakai untuk env `FIREBASE_CREDENTIALS_BA
 
 1. Login ke Render.
 2. Pilih **New +** lalu **Blueprint**.
-3. Hubungkan repository GitHub Buatin.id.
+3. Hubungkan repository GitHub PesanKustom.id.
 4. Render akan membaca `render.yaml` dan membuat:
    - Web Service Docker `buatin-id`
    - Render Postgres `buatin-id-db`
 5. Saat Render meminta environment variable:
    - `APP_KEY`: isi dengan hasil `php artisan key:generate --show`
-   - `APP_URL`: isi dengan URL Render setelah service dibuat, misalnya `https://buatin-id.onrender.com`
+   - `APP_URL`: isi dengan URL Render setelah service dibuat, misalnya `https://pesankustom-id.onrender.com`
    - `FIREBASE_CREDENTIALS_BASE64`: isi dengan service account JSON yang sudah diubah ke base64
 6. Deploy.
 

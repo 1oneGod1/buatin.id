@@ -1,4 +1,4 @@
-<x-layouts.app title="Detail Pesanan {{ $order->order_code }} - Buatin.id">
+<x-layouts.app title="Detail Pesanan {{ $order->order_code }} - PesanKustom.id">
     <section class="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1fr_360px]">
         <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             <div class="flex flex-col justify-between gap-4 md:flex-row md:items-start">

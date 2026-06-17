@@ -1,4 +1,4 @@
-<x-layouts.app title="Daftar Pesanan - Buatin.id">
+<x-layouts.app title="Daftar Pesanan - PesanKustom.id">
     <section class="mx-auto max-w-6xl px-4 py-8">
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>

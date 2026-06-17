@@ -1,4 +1,4 @@
-<x-layouts.app title="Form Builder - Buatin.id">
+<x-layouts.app title="Form Builder - PesanKustom.id">
     @php($fields = $seller->enabledFields())
     @php($fieldLabels = [
         'material' => 'Material',
