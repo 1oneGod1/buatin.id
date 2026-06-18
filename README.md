@@ -115,8 +115,8 @@ APP_URL=http://127.0.0.1:8000
 DB_CONNECTION=sqlite
 
 FIREBASE_ENABLED=true
-FIREBASE_PROJECT_ID=buatin-id-34ac3
-FIREBASE_STORAGE_BUCKET=buatin-id-34ac3.firebasestorage.app
+FIREBASE_PROJECT_ID=your-firebase-project-id
+FIREBASE_STORAGE_BUCKET=your-firebase-storage-bucket
 FIREBASE_CREDENTIALS_BASE64=
 
 FIREBASE_WEB_API_KEY=
@@ -125,11 +125,15 @@ FIREBASE_WEB_SENDER_ID=
 FIREBASE_WEB_APP_ID=
 ```
 
+Isi nilai Firebase di `.env` lokal atau Environment Variables Render. Jangan menuliskan kredensial asli di README, source code, commit GitHub, atau file yang dikumpulkan.
+
 Jangan commit file berikut:
 
 - `.env`
 - Firebase service account JSON
 - private key
+- nilai asli `FIREBASE_CREDENTIALS_BASE64`
+- kredensial/API config yang tidak ingin dipublikasikan
 - `vendor/`
 - `node_modules/`
 
