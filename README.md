@@ -1,58 +1,196 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PesanKustom.id
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+PesanKustom.id adalah MVP aplikasi web untuk membantu kreator dan UMKM menerima pesanan custom dengan lebih rapi. Aplikasi ini menggabungkan katalog produk, form brief pesanan, upload referensi, QRIS, WhatsApp handoff, dan status pesanan dalam satu alur.
 
-## About Laravel
+> Catatan: repository dan beberapa nama infrastruktur masih memakai nama lama `buatin.id` karena dibuat sebelum rebranding. Nama produk yang ditampilkan ke pengguna adalah **PesanKustom.id**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Konteks Produk
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Masalah yang diselesaikan:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Detail pesanan custom sering tersebar di chat WhatsApp atau Instagram.
+- Penjual harus menanyakan brief, ukuran, bahan, warna, referensi, dan deadline secara berulang.
+- Risiko salah memahami permintaan pelanggan cukup tinggi.
+- Penjual pemula sulit menampilkan portofolio dan menerima order secara profesional tanpa membuat website mahal.
 
-## Learning Laravel
+Solusi MVP:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Penjual membuat halaman toko publik.
+- Pelanggan melihat katalog dan mengisi form brief.
+- Sistem membuat ringkasan pesanan.
+- Pembayaran awal dilakukan melalui QRIS manual.
+- Ringkasan pesanan bisa dikirim ke WhatsApp penjual.
+- Pelanggan dapat memantau status pesanan menggunakan kode order.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Product Backlog Yang Diimplementasikan
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+| ID | Backlog | Implementasi |
+| --- | --- | --- |
+| PB-01 | Landing dan onboarding seller | Landing page, register/login, onboarding toko |
+| PB-02 | Halaman toko publik | Route `/{seller:slug}` untuk toko publik |
+| PB-03 | Katalog/portofolio produk | Product manager dan katalog toko |
+| PB-04 | Form brief pesanan custom | Form order pelanggan dengan field brief |
+| PB-05 | Ringkasan, QRIS, dan WhatsApp | Order summary, QRIS, upload bukti, WhatsApp handoff |
+| PB-06 | Dashboard seller | Statistik kunjungan, produk, order baru, belum bayar, selesai |
+| PB-07 | Page builder dan product manager | Pengaturan profil toko dan CRUD produk custom |
+| PB-08 | Form builder dan setting QRIS | Pengaturan field form dan pembayaran QRIS |
+| PB-09 | Order list, detail, timeline status | Daftar order, detail order, update status |
+| PB-10 | Customer status page | Cek status pesanan dengan kode order |
+| PB-11 | Testing, responsive, deployment | Feature test, Vite build, Docker/Render deployment |
 
-## Agentic Development
+Fitur pendukung:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- Firebase Authentication untuk akun seller.
+- Firebase Storage untuk penyimpanan file/foto.
+- Simulasi paket freemium sebagai bagian model bisnis.
+
+## Alur Demo
+
+Demo disarankan mengikuti urutan backlog:
+
+1. Landing page PesanKustom.id.
+2. Login atau masuk sebagai akun demo.
+3. Dashboard seller.
+4. Page builder.
+5. Product manager.
+6. Form builder.
+7. QRIS/payment setting.
+8. Halaman toko publik.
+9. Form order pelanggan.
+10. Ringkasan pesanan, QRIS, dan WhatsApp.
+11. Cek status pesanan.
+12. Order list/detail di dashboard seller.
+
+## Tech Stack
+
+- Laravel 13
+- PHP 8.4
+- Blade
+- Tailwind CSS 4
+- Vite
+- SQLite untuk lokal
+- PostgreSQL untuk Render
+- Firebase Authentication
+- Firebase Storage
+- Render Docker deployment
+
+## Link
+
+- GitHub repository: <https://github.com/1oneGod1/buatin.id>
+- Demo Render: <https://buatin-id-1.onrender.com/>
+
+## Menjalankan Project Lokal
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Lalu buka:
 
-## Contributing
+```text
+http://127.0.0.1:8000
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Untuk masuk sebagai akun demo:
 
-## Code of Conduct
+```text
+http://127.0.0.1:8000/demo
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Environment Penting
 
-## Security Vulnerabilities
+Contoh konfigurasi utama:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+APP_NAME=PesanKustom.id
+APP_ENV=local
+APP_URL=http://127.0.0.1:8000
 
-## License
+DB_CONNECTION=sqlite
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+FIREBASE_ENABLED=true
+FIREBASE_PROJECT_ID=buatin-id-34ac3
+FIREBASE_STORAGE_BUCKET=buatin-id-34ac3.firebasestorage.app
+FIREBASE_CREDENTIALS_BASE64=
+
+FIREBASE_WEB_API_KEY=
+FIREBASE_WEB_AUTH_DOMAIN=
+FIREBASE_WEB_SENDER_ID=
+FIREBASE_WEB_APP_ID=
+```
+
+Jangan commit file berikut:
+
+- `.env`
+- Firebase service account JSON
+- private key
+- `vendor/`
+- `node_modules/`
+
+## Deployment Render
+
+Project sudah menyiapkan:
+
+- `Dockerfile`
+- `render.yaml`
+- `scripts/render-start.sh`
+
+Pada Render, env penting yang perlu diisi:
+
+- `APP_KEY`
+- `APP_URL`
+- `DB_URL` atau `DATABASE_URL`
+- `FIREBASE_ENABLED`
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_STORAGE_BUCKET`
+- `FIREBASE_CREDENTIALS_BASE64`
+- Firebase Web Auth env jika menggunakan login/register berbasis Firebase.
+
+Panduan detail tersedia di:
+
+- `docs/DEPLOY_RENDER.md`
+- `docs/FIREBASE_SETUP.md`
+
+## Testing
+
+Jalankan:
+
+```bash
+php artisan test
+```
+
+Status terakhir sebelum update README:
+
+```text
+12 tests passed
+44 assertions
+```
+
+## Struktur Penting
+
+```text
+app/Http/Controllers        Controller seller, customer order, auth, dan demo
+app/Models                  Model User, Seller, Product, CustomOrder
+app/Services/Firebase       Service Firebase Auth, Storage, dan Sync
+database/migrations         Struktur tabel utama
+database/seeders            Data demo Disyan 3D Studio
+resources/views             Blade views untuk landing, seller, public store, auth
+routes/web.php              Route utama aplikasi
+tests/Feature               Feature test MVP
+```
+
+## Catatan Presentasi AFL3
+
+Untuk presentasi maksimal 15 menit, fokuskan narasi pada:
+
+1. Pelaksanaan 2 sprint yang sudah dilakukan.
+2. GitHub repository performance.
+3. Demo aplikasi sesuai Product Backlog.
+
+Firebase Auth, Firebase Storage, dan subscription adalah pendukung teknis/model bisnis. Saat presentasi, jangan menjadikannya fokus utama agar tetap selaras dengan backlog.
