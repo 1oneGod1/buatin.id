@@ -6,6 +6,46 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* PesanKustom "Riang & rapi" palette */
+    --color-cream: #f3eee4;
+    --color-ink: #16211c;
+    --color-muted: #6e776f;
+    --color-faint: #9aa39a;
+    --color-line: #ede7da;
+
+    --color-brand: #07a86b;
+    --color-brand-deep: #046a45;
+    --color-brand-soft: #e2f6ec;
+
+    --color-coral: #ff6a4d;
+    --color-coral-soft: #ffe6e0;
+    --color-coral-ink: #c23a1e;
+
+    --color-sunny: #ffc53d;
+    --color-sunny-soft: #fff3d6;
+    --color-sunny-ink: #8a5a00;
+
+    --color-sky: #3e8ede;
+    --color-sky-soft: #e3effb;
+    --color-sky-ink: #1f5fa6;
+
+    --color-lilac: #7c6be6;
+    --color-lilac-soft: #ece8fc;
+    --color-lilac-ink: #5a4bc4;
+
+    --color-wa: #25d366;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-cream);
+        background-image:
+            radial-gradient(circle at 12% 8%, rgba(7, 168, 107, 0.07), transparent 40%),
+            radial-gradient(circle at 88% 0%, rgba(255, 106, 77, 0.06), transparent 38%);
+        background-attachment: fixed;
+        color: var(--color-ink);
+    }
 }

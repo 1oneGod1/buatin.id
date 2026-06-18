@@ -3,6 +3,7 @@
 use App\Models\CustomOrder;
 use App\Models\Seller;
 use App\Models\User;
+use App\Services\Firebase\FirebaseIdTokenVerifier;
 
 it('lets a new account create its own store without touching the demo store', function () {
     $this->seed();
@@ -182,4 +183,35 @@ it('lets a seller update order and payment statuses', function () {
 
     expect($order->status)->toBe('processing')
         ->and($order->payment_status)->toBe('paid');
+});
+
+it('exchanges a verified Firebase token for an authenticated session', function () {
+    $this->mock(FirebaseIdTokenVerifier::class, function ($mock) {
+        $mock->shouldReceive('verify')->once()->andReturn([
+            'uid' => 'firebase-uid-123',
+            'email' => 'penjual.baru@toko.id',
+            'email_verified' => true,
+            'name' => 'Penjual Baru',
+        ]);
+    });
+
+    $response = $this->postJson(route('auth.firebase.callback'), ['id_token' => 'dummy-token']);
+
+    $response->assertOk()->assertJsonPath('redirect', route('seller.dashboard'));
+    $this->assertAuthenticated();
+
+    $user = User::where('firebase_uid', 'firebase-uid-123')->firstOrFail();
+
+    expect($user->email)->toBe('penjual.baru@toko.id')
+        ->and($user->hasVerifiedEmail())->toBeTrue();
+});
+
+it('rejects an invalid Firebase token', function () {
+    $this->mock(FirebaseIdTokenVerifier::class, function ($mock) {
+        $mock->shouldReceive('verify')->andThrow(new RuntimeException('invalid token'));
+    });
+
+    $this->postJson(route('auth.firebase.callback'), ['id_token' => 'bad-token'])->assertStatus(401);
+
+    $this->assertGuest();
 });

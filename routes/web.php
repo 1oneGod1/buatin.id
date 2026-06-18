@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\MarketingController;
@@ -21,19 +20,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', MarketingController::class)->name('home');
 Route::get('/demo', DemoController::class)->name('demo');
 
+// Firebase Authentication bridge: exchanges a verified Firebase ID token for a Laravel session.
+Route::post('/auth/firebase/callback', [FirebaseAuthController::class, 'store'])->name('auth.firebase.callback');
+
 /*
- * Guest authentication routes.
+ * Guest authentication pages (forms handled client-side via Firebase Auth).
  */
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [RegisterController::class, 'create'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+    Route::view('/register', 'auth.register')->name('register');
     Route::get('/login', [LoginController::class, 'create'])->name('login');
-    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
-
-    Route::get('/forgot-password', [PasswordResetController::class, 'request'])->name('password.request');
-    Route::post('/forgot-password', [PasswordResetController::class, 'email'])->name('password.email');
-    Route::get('/reset-password/{token}', [PasswordResetController::class, 'reset'])->name('password.reset');
-    Route::post('/reset-password', [PasswordResetController::class, 'update'])->name('password.update');
+    Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
 });
 
 /*
@@ -41,14 +37,7 @@ Route::middleware('guest')->group(function () {
  */
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-
     Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
-        ->middleware('throttle:6,1')
-        ->name('verification.send');
 });
 
 /*
