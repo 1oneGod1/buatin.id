@@ -97,6 +97,16 @@ class Seller extends Model
         return Attribute::get(fn () => url($this->slug));
     }
 
+    /**
+     * Absolute image URL for link share previews (OpenGraph), or null for default.
+     */
+    public function shareImage(): ?string
+    {
+        $path = $this->banner_path ?: $this->logo_path;
+
+        return $path ? app(\App\Services\Firebase\FirebaseStorageService::class)->url($path) : null;
+    }
+
     public static function makeSlug(string $brandName): string
     {
         $base = Str::slug($brandName) ?: 'brand';

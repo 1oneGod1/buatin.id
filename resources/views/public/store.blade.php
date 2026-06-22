@@ -1,4 +1,9 @@
-<x-layouts.app :title="$seller->brand_name.' | PesanKustom.id'">
+<x-layouts.app
+    :title="$seller->brand_name.' | PesanKustom.id'"
+    :description="\Illuminate\Support\Str::limit($seller->description ?: ($seller->category.($seller->location ? ' · '.$seller->location : '')), 180)"
+    :ogImage="$seller->shareImage()"
+    ogType="profile"
+>
     @php($storage = app(\App\Services\Firebase\FirebaseStorageService::class))
 
     {{-- HERO --}}

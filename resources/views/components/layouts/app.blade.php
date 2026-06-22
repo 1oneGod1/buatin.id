@@ -1,10 +1,35 @@
+@php
+    $metaTitle = $title ?? 'PesanKustom.id';
+    $metaDescription = $description ?? 'Buat halaman pesanan custom dalam satu link — katalog, form brief, QRIS, dan status order. Untuk kreator & UMKM.';
+    $metaType = $ogType ?? 'website';
+    $metaImage = ($ogImage ?? null) ?: asset('og-default.png');
+@endphp
 <!doctype html>
 <html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'PesanKustom.id' }}</title>
+    <meta name="theme-color" content="#07A86B">
+    <title>{{ $metaTitle }}</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+
+    {{-- Share preview (OpenGraph + Twitter) --}}
+    <meta property="og:site_name" content="PesanKustom.id">
+    <meta property="og:type" content="{{ $metaType }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ $metaImage }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
+
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
