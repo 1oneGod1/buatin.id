@@ -62,4 +62,8 @@ php artisan view:cache
     done
 ) &
 
+# PHP's built-in server is single-threaded by default; fork a few workers so
+# one slow request does not block every other visitor.
+export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-4}"
+
 exec php -S 0.0.0.0:"${PORT:-10000}" -t public scripts/render-router.php

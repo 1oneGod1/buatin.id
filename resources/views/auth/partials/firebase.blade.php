@@ -1,11 +1,11 @@
 @php($firebaseWeb = config('firebase.web'))
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
     import {
         getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, reload,
         createUserWithEmailAndPassword, signInWithEmailAndPassword,
         sendEmailVerification, sendPasswordResetEmail, updateProfile,
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
     const app = initializeApp(@json($firebaseWeb));
     const auth = getAuth(app);

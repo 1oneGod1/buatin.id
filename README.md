@@ -172,8 +172,8 @@ php artisan test
 Status terakhir sebelum update README:
 
 ```text
-18 tests passed
-74 assertions
+19 tests passed
+78 assertions
 ```
 
 ## Struktur Penting

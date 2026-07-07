@@ -357,6 +357,27 @@ it('queues the Firestore sync as a job instead of calling Firestore during the r
     );
 });
 
+it('rejects a Firebase login whose new email already belongs to another account', function () {
+    User::factory()->create(['email' => 'dipakai@toko.id']);
+    $linked = User::factory()->create(['email' => 'lama@toko.id', 'firebase_uid' => 'uid-linked']);
+
+    $this->mock(FirebaseIdTokenVerifier::class, function ($mock) {
+        $mock->shouldReceive('verify')->once()->andReturn([
+            'uid' => 'uid-linked',
+            'email' => 'dipakai@toko.id',
+            'email_verified' => true,
+            'name' => 'Penjual Lama',
+        ]);
+    });
+
+    $this->postJson(route('auth.firebase.callback'), ['id_token' => 'dummy-token'])
+        ->assertStatus(409);
+
+    $this->assertGuest();
+
+    expect($linked->fresh()->email)->toBe('lama@toko.id');
+});
+
 it('rejects an invalid Firebase token', function () {
     $this->mock(FirebaseIdTokenVerifier::class, function ($mock) {
         $mock->shouldReceive('verify')->andThrow(new RuntimeException('invalid token'));

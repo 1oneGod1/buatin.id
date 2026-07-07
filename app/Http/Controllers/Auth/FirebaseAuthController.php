@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Firebase\FirebaseIdTokenVerifier;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,15 @@ class FirebaseAuthController extends Controller
             'name' => $claims['name'] ?: Str::before($claims['email'] ?? 'Penjual', '@'),
         ];
 
-        $user ? $user->update($attributes) : $user = User::create($attributes);
+        try {
+            $user ? $user->update($attributes) : $user = User::create($attributes);
+        } catch (UniqueConstraintViolationException) {
+            // The Firebase email now belongs to a different local account
+            // (e.g. changed in Firebase to an address another seller uses).
+            return response()->json([
+                'message' => 'Email ini sudah terhubung ke akun lain di PesanKustom.id.',
+            ], 409);
+        }
 
         // email_verified_at is guarded; set it explicitly from the Firebase claim. Never un-verify.
         if ($claims['email_verified'] && ! $user->hasVerifiedEmail()) {
