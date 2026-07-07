@@ -17,6 +17,11 @@ class CustomerOrderController extends Controller
 {
     use ResolvesSeller;
 
+    /**
+     * Baseline estimate (Rp) when the customer orders without picking a catalog product.
+     */
+    private const DEFAULT_ESTIMATED_PRICE = 100000;
+
     public function __construct(
         private readonly FirebaseStorageService $files,
         private readonly FirebaseSyncService $firebase,
@@ -32,30 +37,17 @@ class CustomerOrderController extends Controller
 
     public function store(Request $request, Seller $seller): RedirectResponse
     {
-        $validated = $request->validate([
-            'customer_name' => ['required', 'string', 'max:80'],
-            'customer_whatsapp' => ['required', 'string', 'max:30'],
-            'product_id' => ['nullable', 'exists:products,id'],
-            'product_type' => ['required', 'string', 'max:120'],
-            'material' => ['nullable', 'string', 'max:80'],
-            'size' => ['nullable', 'string', 'max:80'],
-            'color' => ['nullable', 'string', 'max:80'],
-            'quantity' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'deadline' => ['nullable', 'date'],
-            'budget' => ['nullable', 'string', 'max:80'],
-            'notes' => ['nullable', 'string', 'max:800'],
-            'reference' => ['nullable', 'file', 'max:10240'],
-        ]);
+        $validated = $request->validate($this->orderRules($seller));
 
         $product = isset($validated['product_id'])
             ? Product::where('seller_id', $seller->id)->find($validated['product_id'])
             : null;
 
-        $quantity = (int) ($validated['quantity'] ?? 1);
-        $estimatedPrice = ($product?->starting_price ?: 100000) * max(1, $quantity);
+        $quantity = max(1, (int) ($validated['quantity'] ?? 1));
+        $estimatedPrice = ($product?->starting_price ?? self::DEFAULT_ESTIMATED_PRICE) * $quantity;
 
-        if ($request->hasFile('reference')) {
-            $validated['reference_path'] = $this->files->upload($request->file('reference'), 'references');
+        if ($validated['reference'] ?? null) {
+            $validated['reference_path'] = $this->files->upload($validated['reference'], 'references');
         }
 
         unset($validated['reference']);
@@ -64,7 +56,7 @@ class CustomerOrderController extends Controller
             ...$validated,
             'seller_id' => $seller->id,
             'product_id' => $product?->id,
-            'order_code' => 'BID-'.Str::upper(Str::random(6)),
+            'order_code' => CustomOrder::generateOrderCode(),
             'quantity' => $quantity,
             'estimated_price' => $estimatedPrice,
             'status' => 'waiting_payment',
@@ -74,6 +66,41 @@ class CustomerOrderController extends Controller
         $this->firebase->order($order->load('seller', 'product'));
 
         return redirect()->route('orders.summary', $order);
+    }
+
+    /**
+     * Optional brief fields are only accepted when the seller enabled them
+     * in the form builder, mirroring what the public form renders.
+     */
+    private function orderRules(Seller $seller): array
+    {
+        $rules = [
+            'customer_name' => ['required', 'string', 'max:80'],
+            'customer_whatsapp' => ['required', 'string', 'max:30'],
+            'product_id' => ['nullable', 'exists:products,id'],
+            'product_type' => ['required', 'string', 'max:120'],
+        ];
+
+        $optional = [
+            'material' => ['nullable', 'string', 'max:80'],
+            'size' => ['nullable', 'string', 'max:80'],
+            'color' => ['nullable', 'string', 'max:80'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:999'],
+            'deadline' => ['nullable', 'date'],
+            'budget' => ['nullable', 'string', 'max:80'],
+            'notes' => ['nullable', 'string', 'max:800'],
+            'reference' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:10240'],
+        ];
+
+        $enabled = $seller->enabledFields();
+
+        foreach ($optional as $field => $fieldRules) {
+            if ($enabled[$field] ?? false) {
+                $rules[$field] = $fieldRules;
+            }
+        }
+
+        return $rules;
     }
 
     public function summary(CustomOrder $order): View
@@ -87,7 +114,7 @@ class CustomerOrderController extends Controller
     public function uploadProof(Request $request, CustomOrder $order): RedirectResponse
     {
         $request->validate([
-            'payment_proof' => ['required', 'file', 'max:5120'],
+            'payment_proof' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ]);
 
         $this->files->delete($order->payment_proof_path);

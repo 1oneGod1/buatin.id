@@ -10,6 +10,8 @@ class DemoController extends Controller
 {
     public function __invoke(): RedirectResponse
     {
+        abort_unless(config('app.demo_enabled'), 404);
+
         $seller = Seller::with('user')->firstOrFail();
 
         if ($seller->user) {

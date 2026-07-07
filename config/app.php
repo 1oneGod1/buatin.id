@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Demo Account Login
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, the /demo route logs any visitor in as the seeded demo
+    | seller account. Handy for presentations; disable it once the app
+    | serves real users by setting DEMO_ENABLED=false.
+    |
+    */
+
+    'demo_enabled' => env('DEMO_ENABLED', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

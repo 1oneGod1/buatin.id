@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'seller_id',
@@ -32,6 +33,15 @@ class CustomOrder extends Model
     public function getRouteKeyName(): string
     {
         return 'order_code';
+    }
+
+    public static function generateOrderCode(): string
+    {
+        do {
+            $code = 'PK-'.Str::upper(Str::random(6));
+        } while (self::where('order_code', $code)->exists());
+
+        return $code;
     }
 
     protected function casts(): array
@@ -81,13 +91,13 @@ class CustomOrder extends Model
             "Order: {$this->order_code}",
             "Nama: {$this->customer_name}",
             "Produk: {$this->product_type}",
-            "Material: ".($this->material ?: '-'),
-            "Ukuran: ".($this->size ?: '-'),
-            "Warna: ".($this->color ?: '-'),
+            'Material: '.($this->material ?: '-'),
+            'Ukuran: '.($this->size ?: '-'),
+            'Warna: '.($this->color ?: '-'),
             "Jumlah: {$this->quantity}",
-            "Deadline: ".($this->deadline?->format('d M Y') ?: '-'),
-            "Budget: ".($this->budget ?: '-'),
-            "Estimasi: Rp ".number_format($this->estimated_price, 0, ',', '.'),
+            'Deadline: '.($this->deadline?->format('d M Y') ?: '-'),
+            'Budget: '.($this->budget ?: '-'),
+            'Estimasi: Rp '.number_format($this->estimated_price, 0, ',', '.'),
         ];
 
         return implode("\n", $lines);

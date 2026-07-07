@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Seller;
 use App\Services\Firebase\FirebaseSyncService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -51,7 +52,14 @@ class SellerOnboardingController extends Controller
             ];
             $validated['plan'] = 'free';
             $validated['subscription_status'] = 'active';
-            $seller = Seller::create($validated);
+
+            try {
+                $seller = Seller::create($validated);
+            } catch (UniqueConstraintViolationException) {
+                // Two onboardings picked the same slug concurrently; regenerate once.
+                $validated['slug'] = Seller::makeSlug($validated['brand_name']);
+                $seller = Seller::create($validated);
+            }
         }
 
         $this->firebase->seller($seller->fresh());

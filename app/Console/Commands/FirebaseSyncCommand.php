@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use App\Models\CustomOrder;
 use App\Models\Product;
 use App\Models\Seller;
-use App\Services\Firebase\FirestoreRestService;
 use App\Services\Firebase\FirebaseCredentials;
 use App\Services\Firebase\FirebaseSyncService;
+use App\Services\Firebase\FirestoreRestService;
 use Illuminate\Console\Command;
 
 class FirebaseSyncCommand extends Command
@@ -34,7 +34,7 @@ class FirebaseSyncCommand extends Command
         Product::query()->with('seller')->each(fn (Product $product) => $sync->product($product));
         CustomOrder::query()->with('seller', 'product')->each(fn (CustomOrder $order) => $sync->order($order));
 
-        $this->components->info('Firebase sync completed.');
+        $this->components->info('Firebase sync jobs queued; a queue worker will push them to Firestore.');
 
         return self::SUCCESS;
     }

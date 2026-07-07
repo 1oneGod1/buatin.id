@@ -120,7 +120,7 @@
             @if ($fields['reference'] ?? false)
                 <label class="mt-5 block">
                     <span class="{{ $lbl }}">Upload referensi</span>
-                    <input type="file" name="reference" class="mt-2 w-full rounded-xl border border-dashed border-line bg-cream px-4 py-4 text-sm text-muted">
+                    <input type="file" name="reference" accept=".jpg,.jpeg,.png,.webp,.pdf" class="mt-2 w-full rounded-xl border border-dashed border-line bg-cream px-4 py-4 text-sm text-muted">
                 </label>
             @endif
             @if ($fields['notes'] ?? false)

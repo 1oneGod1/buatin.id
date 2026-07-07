@@ -85,7 +85,7 @@
                     @csrf
                     <label class="block">
                         <span class="text-sm font-bold text-ink">Upload bukti pembayaran</span>
-                        <input type="file" name="payment_proof" required class="mt-2 w-full rounded-xl border border-dashed border-line bg-cream px-4 py-4 text-sm text-muted">
+                        <input type="file" name="payment_proof" required accept=".jpg,.jpeg,.png,.webp,.pdf" class="mt-2 w-full rounded-xl border border-dashed border-line bg-cream px-4 py-4 text-sm text-muted">
                     </label>
                     <button class="mt-4 w-full rounded-2xl bg-ink px-5 py-3.5 text-sm font-extrabold text-white hover:opacity-90">Unggah Bukti</button>
                 </form>

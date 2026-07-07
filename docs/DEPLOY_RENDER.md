@@ -71,7 +71,7 @@ CMD ["sh", "scripts/render-start.sh"]
 
 - Render Postgres plan gratis cocok untuk testing, tetapi database gratis punya batas waktu dan limit. Jangan dipakai sebagai database bisnis sungguhan.
 - File upload seperti logo, banner, QRIS, referensi, dan bukti pembayaran sudah diarahkan ke Firebase Storage saat `FIREBASE_ENABLED=true`.
-- Data seller, product, dan order akan disinkronkan ke Firestore lewat command `php artisan firebase:sync`.
+- Data seller, product, dan order disinkronkan ke Firestore lewat queued job (`QUEUE_CONNECTION=database`). `scripts/render-start.sh` otomatis menjalankan queue worker di container yang sama, jadi tidak perlu service worker terpisah. Backfill manual bisa lewat `php artisan firebase:sync` (mengantrekan job untuk semua data).
 - Aplikasi masih memakai database Laravel untuk session, cache, dan operasional server-side. Firestore dipakai sebagai penyimpanan/sinkronisasi data Firebase agar data testing dapat dilihat di Firebase Console.
 - Seeder akan otomatis membuat data demo `Disyan 3D Studio` saat deploy, lalu disinkronkan ke Firestore.
 

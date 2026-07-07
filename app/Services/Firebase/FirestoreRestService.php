@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 
 class FirestoreRestService
@@ -49,7 +50,8 @@ class FirestoreRestService
                 'Authorization' => 'Bearer '.$this->token(),
                 'Accept' => 'application/json',
             ],
-            'timeout' => 20,
+            'connect_timeout' => 5,
+            'timeout' => 10,
         ]);
     }
 
@@ -72,6 +74,10 @@ class FirestoreRestService
             return $this->accessToken;
         }
 
+        if ($cached = Cache::get('firebase.firestore.token')) {
+            return $this->accessToken = $cached;
+        }
+
         $credentials = new ServiceAccountCredentials(
             ['https://www.googleapis.com/auth/datastore'],
             $this->credentials->keyFile(),
@@ -82,6 +88,10 @@ class FirestoreRestService
         if (! isset($token['access_token'])) {
             throw new RuntimeException('Failed to fetch Firebase access token.');
         }
+
+        // Reuse the token until shortly before it expires (default lifetime 1 hour).
+        $ttl = max(60, (int) ($token['expires_in'] ?? 3600) - 300);
+        Cache::put('firebase.firestore.token', $token['access_token'], $ttl);
 
         return $this->accessToken = $token['access_token'];
     }

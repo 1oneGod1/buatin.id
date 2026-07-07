@@ -53,4 +53,13 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Queue worker in the same container (Render free plan has no separate worker
+# service). The loop restarts it after the hourly recycle or a crash.
+(
+    while true; do
+        php artisan queue:work --tries=3 --backoff=10 --max-time=3600 || true
+        sleep 2
+    done
+) &
+
 exec php -S 0.0.0.0:"${PORT:-10000}" -t public scripts/render-router.php

@@ -28,13 +28,22 @@ class FirebaseAuthController extends Controller
             return response()->json(['message' => 'Sesi Firebase tidak valid. Coba masuk ulang.'], 401);
         }
 
-        $user = User::updateOrCreate(
-            ['firebase_uid' => $claims['uid']],
-            [
-                'email' => $claims['email'],
-                'name' => $claims['name'] ?: Str::before($claims['email'] ?? 'Penjual', '@'),
-            ],
-        );
+        // Match by Firebase UID first, then by email so an existing account
+        // (created before Firebase linking) is claimed instead of colliding
+        // with the unique email index.
+        $user = User::where('firebase_uid', $claims['uid'])->first();
+
+        if (! $user && $claims['email']) {
+            $user = User::where('email', $claims['email'])->first();
+        }
+
+        $attributes = [
+            'firebase_uid' => $claims['uid'],
+            'email' => $claims['email'] ?? $user?->email,
+            'name' => $claims['name'] ?: Str::before($claims['email'] ?? 'Penjual', '@'),
+        ];
+
+        $user ? $user->update($attributes) : $user = User::create($attributes);
 
         // email_verified_at is guarded; set it explicitly from the Firebase claim. Never un-verify.
         if ($claims['email_verified'] && ! $user->hasVerifiedEmail()) {

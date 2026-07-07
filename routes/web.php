@@ -21,7 +21,9 @@ Route::get('/', MarketingController::class)->name('home');
 Route::get('/demo', DemoController::class)->name('demo');
 
 // Firebase Authentication bridge: exchanges a verified Firebase ID token for a Laravel session.
-Route::post('/auth/firebase/callback', [FirebaseAuthController::class, 'store'])->name('auth.firebase.callback');
+Route::post('/auth/firebase/callback', [FirebaseAuthController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('auth.firebase.callback');
 
 /*
  * Guest authentication pages (forms handled client-side via Firebase Auth).
@@ -71,11 +73,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
  * Public customer-facing routes.
  */
 Route::get('/orders/{order:order_code}/summary', [CustomerOrderController::class, 'summary'])->name('orders.summary');
-Route::post('/orders/{order:order_code}/payment-proof', [CustomerOrderController::class, 'uploadProof'])->name('orders.payment-proof');
+Route::post('/orders/{order:order_code}/payment-proof', [CustomerOrderController::class, 'uploadProof'])
+    ->middleware('throttle:10,1')
+    ->name('orders.payment-proof');
 Route::get('/orders/{order:order_code}/status', [CustomerOrderController::class, 'status'])->name('orders.status');
 Route::get('/status', [CustomerOrderController::class, 'lookupForm'])->name('orders.lookup');
-Route::post('/status', [CustomerOrderController::class, 'lookup'])->name('orders.lookup.submit');
+Route::post('/status', [CustomerOrderController::class, 'lookup'])
+    ->middleware('throttle:15,1')
+    ->name('orders.lookup.submit');
 
 Route::get('/{seller:slug}', [PublicStoreController::class, 'show'])->name('public.store');
 Route::get('/{seller:slug}/order', [CustomerOrderController::class, 'create'])->name('public.order.create');
-Route::post('/{seller:slug}/order', [CustomerOrderController::class, 'store'])->name('public.order.store');
+Route::post('/{seller:slug}/order', [CustomerOrderController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('public.order.store');

@@ -50,7 +50,7 @@
                 ['Produk', $stats['products'], 'Tampil di katalog', '📦', 'bg-brand-soft', 'text-ink'],
                 ['Order baru', $stats['new_orders'], 'Perlu diproses', '🔔', 'bg-sunny-soft', 'text-brand'],
                 ['Belum bayar', $stats['pending_payment'], 'Follow up pembeli', '💳', 'bg-coral-soft', 'text-coral-ink'],
-                ['Selesai', $stats['completed'], 'Bulan ini', '✅', 'bg-lilac-soft', 'text-ink'],
+                ['Selesai', $stats['completed'], 'Semua waktu', '✅', 'bg-lilac-soft', 'text-ink'],
             ] as [$label, $value, $hint, $icon, $iconbg, $numcolor])
                 <div class="rounded-[22px] border border-line bg-white p-5 shadow-[0_2px_6px_rgba(22,33,28,0.05)]">
                     <div class="flex items-center gap-2.5">

@@ -2,17 +2,25 @@
 
 namespace App\Services\Firebase;
 
+use App\Jobs\DeleteFirestoreDocument;
+use App\Jobs\UpsertFirestoreDocument;
 use App\Models\CustomOrder;
 use App\Models\Product;
 use App\Models\Seller;
 
+/**
+ * Mirrors local data to Firestore through queued jobs so HTTP requests never
+ * wait on (or fail because of) the Firestore API. The document payload is
+ * snapshotted at dispatch time; the queue worker performs the network call
+ * and retries transient failures. The local database is the source of truth.
+ */
 class FirebaseSyncService
 {
-    public function __construct(private readonly FirestoreRestService $firestore) {}
+    public function __construct(private readonly FirebaseCredentials $credentials) {}
 
     public function seller(Seller $seller): void
     {
-        $this->firestore->upsert('sellers', $seller->slug, [
+        $this->upsert('sellers', $seller->slug, [
             'id' => $seller->id,
             'brand_name' => $seller->brand_name,
             'slug' => $seller->slug,
@@ -37,7 +45,7 @@ class FirebaseSyncService
 
     public function product(Product $product): void
     {
-        $this->firestore->upsert('products', (string) $product->id, [
+        $this->upsert('products', (string) $product->id, [
             'id' => $product->id,
             'seller_id' => $product->seller_id,
             'seller_slug' => $product->seller?->slug,
@@ -54,12 +62,16 @@ class FirebaseSyncService
 
     public function deleteProduct(string $productId): void
     {
-        $this->firestore->delete('products', $productId);
+        if (! $this->credentials->enabled()) {
+            return;
+        }
+
+        rescue(fn () => DeleteFirestoreDocument::dispatch('products', $productId));
     }
 
     public function order(CustomOrder $order): void
     {
-        $this->firestore->upsert('orders', $order->order_code, [
+        $this->upsert('orders', $order->order_code, [
             'id' => $order->id,
             'seller_id' => $order->seller_id,
             'seller_slug' => $order->seller?->slug,
@@ -85,5 +97,16 @@ class FirebaseSyncService
             'created_at' => $order->created_at,
             'updated_at' => $order->updated_at,
         ]);
+    }
+
+    private function upsert(string $collection, string $documentId, array $fields): void
+    {
+        if (! $this->credentials->enabled()) {
+            return;
+        }
+
+        // rescue keeps the caller's request alive even when the queue driver
+        // is "sync" and the Firestore call itself fails inline.
+        rescue(fn () => UpsertFirestoreDocument::dispatch($collection, $documentId, $fields));
     }
 }

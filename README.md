@@ -172,14 +172,15 @@ php artisan test
 Status terakhir sebelum update README:
 
 ```text
-12 tests passed
-44 assertions
+18 tests passed
+74 assertions
 ```
 
 ## Struktur Penting
 
 ```text
 app/Http/Controllers        Controller seller, customer order, auth, dan demo
+app/Jobs                    Queued job sinkronisasi dokumen Firestore
 app/Models                  Model User, Seller, Product, CustomOrder
 app/Services/Firebase       Service Firebase Auth, Storage, dan Sync
 database/migrations         Struktur tabel utama

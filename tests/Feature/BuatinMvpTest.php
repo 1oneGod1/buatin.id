@@ -1,9 +1,13 @@
 <?php
 
+use App\Jobs\UpsertFirestoreDocument;
 use App\Models\CustomOrder;
 use App\Models\Seller;
 use App\Models\User;
 use App\Services\Firebase\FirebaseIdTokenVerifier;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 it('lets a new account create its own store without touching the demo store', function () {
     $this->seed();
@@ -164,7 +168,7 @@ it('lets a seller update order and payment statuses', function () {
     $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
     $order = CustomOrder::create([
         'seller_id' => $seller->id,
-        'order_code' => 'BID-TEST01',
+        'order_code' => 'PK-TEST01',
         'customer_name' => 'Disyan',
         'customer_whatsapp' => '081234567890',
         'product_type' => 'Prototype casing',
@@ -204,6 +208,153 @@ it('exchanges a verified Firebase token for an authenticated session', function 
 
     expect($user->email)->toBe('penjual.baru@toko.id')
         ->and($user->hasVerifiedEmail())->toBeTrue();
+});
+
+it('rejects a non-image reference upload on the order form', function () {
+    $this->seed();
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $ordersBefore = $seller->customOrders()->count();
+
+    $this->post(route('public.order.store', $seller), [
+        'customer_name' => 'Andi Test',
+        'customer_whatsapp' => '081234567891',
+        'product_type' => 'Mini figure custom',
+        'reference' => UploadedFile::fake()->create('payload.php', 10, 'application/x-php'),
+    ])->assertSessionHasErrors('reference');
+
+    expect($seller->customOrders()->count())->toBe($ordersBefore);
+});
+
+it('rejects a non-image payment proof but accepts an image', function () {
+    $this->seed();
+    Storage::fake('public');
+    config(['firebase.enabled' => false]);
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $order = CustomOrder::create([
+        'seller_id' => $seller->id,
+        'order_code' => 'PK-PROOF1',
+        'customer_name' => 'Disyan',
+        'customer_whatsapp' => '081234567890',
+        'product_type' => 'Prototype casing',
+        'quantity' => 1,
+        'estimated_price' => 90000,
+        'status' => 'waiting_payment',
+        'payment_status' => 'unpaid',
+    ]);
+
+    $this->post(route('orders.payment-proof', $order), [
+        'payment_proof' => UploadedFile::fake()->create('proof.exe', 10),
+    ])->assertSessionHasErrors('payment_proof');
+
+    expect($order->fresh()->payment_status)->toBe('unpaid');
+
+    $this->post(route('orders.payment-proof', $order), [
+        'payment_proof' => UploadedFile::fake()->image('proof.jpg'),
+    ])->assertSessionDoesntHaveErrors()->assertRedirect();
+
+    $order->refresh();
+
+    expect($order->payment_status)->toBe('proof_uploaded')
+        ->and($order->payment_proof_path)->not->toBeNull();
+});
+
+it('ignores brief fields the seller disabled in the form builder', function () {
+    $this->seed();
+    Storage::fake('public');
+    config(['firebase.enabled' => false]);
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $seller->update(['form_fields' => [
+        'material' => true,
+        'size' => true,
+        'color' => true,
+        'quantity' => true,
+        'deadline' => true,
+        'budget' => true,
+        'reference' => false,
+        'notes' => false,
+    ]]);
+
+    $this->post(route('public.order.store', $seller), [
+        'customer_name' => 'Andi Test',
+        'customer_whatsapp' => '081234567891',
+        'product_type' => 'Gantungan kunci custom',
+        'notes' => 'Catatan yang seharusnya diabaikan server.',
+        'reference' => UploadedFile::fake()->image('ref.jpg'),
+    ])->assertRedirect();
+
+    $order = $seller->customOrders()->latest('id')->firstOrFail();
+
+    expect($order->notes)->toBeNull()
+        ->and($order->reference_path)->toBeNull();
+});
+
+it("blocks a seller from updating or deleting another seller's product", function () {
+    $this->seed();
+
+    $demo = Seller::where('slug', 'disyanz3d')->firstOrFail();
+    $product = $demo->products()->firstOrFail();
+
+    $intruder = User::factory()->create();
+    Seller::create([
+        'user_id' => $intruder->id,
+        'brand_name' => 'Toko Lain',
+        'slug' => 'toko-lain',
+        'category' => 'Lainnya',
+        'whatsapp' => '081111111111',
+        'plan' => 'free',
+        'subscription_status' => 'active',
+    ]);
+
+    $this->actingAs($intruder)->put(route('seller.products.update', $product), [
+        'name' => 'Dibajak',
+        'starting_price' => 1,
+    ])->assertNotFound();
+
+    $this->actingAs($intruder)
+        ->delete(route('seller.products.destroy', $product))
+        ->assertNotFound();
+
+    expect($product->fresh())->not->toBeNull()
+        ->and($product->fresh()->name)->not->toBe('Dibajak');
+});
+
+it('rate limits public order submissions', function () {
+    $this->seed();
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+
+    foreach (range(1, 10) as $attempt) {
+        $this->post(route('public.order.store', $seller), [])->assertStatus(302);
+    }
+
+    $this->post(route('public.order.store', $seller), [])->assertStatus(429);
+});
+
+it('queues the Firestore sync as a job instead of calling Firestore during the request', function () {
+    $this->seed();
+
+    config([
+        'firebase.enabled' => true,
+        'firebase.credentials_base64' => base64_encode('{}'),
+    ]);
+    Queue::fake();
+
+    $seller = Seller::where('slug', 'disyanz3d')->firstOrFail();
+
+    $this->post(route('public.order.store', $seller), [
+        'customer_name' => 'Andi Test',
+        'customer_whatsapp' => '081234567891',
+        'product_type' => 'Mini figure custom',
+        'quantity' => 1,
+    ])->assertRedirect();
+
+    Queue::assertPushed(
+        UpsertFirestoreDocument::class,
+        fn (UpsertFirestoreDocument $job) => $job->collection === 'orders',
+    );
 });
 
 it('rejects an invalid Firebase token', function () {

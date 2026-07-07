@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ResolvesSeller;
 use App\Models\Product;
+use App\Models\Seller;
 use App\Services\Firebase\FirebaseStorageService;
 use App\Services\Firebase\FirebaseSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class SellerProductController extends Controller
@@ -31,9 +33,7 @@ class SellerProductController extends Controller
         $seller = $this->seller();
 
         if (! $seller->canAddProduct()) {
-            return back()
-                ->withErrors(['name' => 'Paket Free hanya mendukung maksimal 3 produk. Upgrade ke Starter untuk menambah produk lagi.'])
-                ->withInput();
+            return $this->productLimitReached();
         }
 
         $validated = $this->validateProduct($request);
@@ -44,10 +44,30 @@ class SellerProductController extends Controller
 
         unset($validated['image']);
 
-        $product = $seller->products()->create($validated);
+        // Re-check the plan limit under a row lock so parallel submissions
+        // cannot exceed it between the check above and the insert.
+        $product = DB::transaction(function () use ($seller, $validated) {
+            Seller::whereKey($seller->id)->lockForUpdate()->first();
+
+            return $seller->canAddProduct()
+                ? $seller->products()->create($validated)
+                : null;
+        });
+
+        if (! $product) {
+            return $this->productLimitReached();
+        }
+
         $this->firebase->product($product->load('seller'));
 
         return back()->with('status', 'Produk custom berhasil ditambahkan ke katalog.');
+    }
+
+    private function productLimitReached(): RedirectResponse
+    {
+        return back()
+            ->withErrors(['name' => 'Paket Free hanya mendukung maksimal 3 produk. Upgrade ke Starter untuk menambah produk lagi.'])
+            ->withInput();
     }
 
     public function update(Request $request, Product $product): RedirectResponse

@@ -11,18 +11,26 @@ class SellerDashboardController extends Controller
 
     public function __invoke(): View
     {
-        $seller = $this->seller()->load(['customOrders' => fn ($query) => $query->latest(), 'products']);
-        $orders = $seller->customOrders;
+        $seller = $this->seller()->load('products');
+
+        $counts = $seller->customOrders()
+            ->toBase()
+            ->selectRaw("
+                sum(case when status in ('waiting_payment', 'received') then 1 else 0 end) as new_orders,
+                sum(case when payment_status in ('unpaid', 'proof_uploaded') then 1 else 0 end) as pending_payment,
+                sum(case when status = 'completed' then 1 else 0 end) as completed
+            ")
+            ->first();
 
         return view('seller.dashboard', [
             'seller' => $seller,
-            'orders' => $orders->take(5),
+            'orders' => $seller->customOrders()->latest()->limit(5)->get(),
             'stats' => [
                 'visits' => $seller->views,
                 'products' => $seller->products->count(),
-                'new_orders' => $orders->whereIn('status', ['waiting_payment', 'received'])->count(),
-                'pending_payment' => $orders->whereIn('payment_status', ['unpaid', 'proof_uploaded'])->count(),
-                'completed' => $orders->where('status', 'completed')->count(),
+                'new_orders' => (int) $counts->new_orders,
+                'pending_payment' => (int) $counts->pending_payment,
+                'completed' => (int) $counts->completed,
             ],
         ]);
     }

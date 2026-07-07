@@ -29,7 +29,7 @@ class FirebaseStorageService
 
         $bucket = $storage->bucket($bucketName);
 
-        $bucket->upload(fopen($file->getRealPath(), 'r'), [
+        $bucket->upload(fopen($file->getRealPath(), 'rb'), [
             'name' => $objectName,
             'metadata' => [
                 'contentType' => $file->getMimeType(),
