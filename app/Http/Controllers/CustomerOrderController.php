@@ -86,7 +86,7 @@ class CustomerOrderController extends Controller
             'size' => ['nullable', 'string', 'max:80'],
             'color' => ['nullable', 'string', 'max:80'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:999'],
-            'deadline' => ['nullable', 'date'],
+            'deadline' => ['nullable', 'date', 'after_or_equal:today'],
             'budget' => ['nullable', 'string', 'max:80'],
             'notes' => ['nullable', 'string', 'max:800'],
             'reference' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:10240'],
@@ -107,7 +107,7 @@ class CustomerOrderController extends Controller
     {
         return view('public.summary', [
             'order' => $order->load('seller', 'product'),
-            'whatsappUrl' => $this->whatsappUrl($order->seller, $order->whatsappSummary()),
+            'whatsappUrl' => $this->whatsappUrl($order->seller->whatsapp, $order->whatsappSummary()),
         ]);
     }
 
@@ -155,7 +155,7 @@ class CustomerOrderController extends Controller
     {
         return view('public.status', [
             'order' => $order->load('seller', 'product'),
-            'whatsappUrl' => $this->whatsappUrl($order->seller, "Halo, saya ingin menanyakan status order {$order->order_code}."),
+            'whatsappUrl' => $this->whatsappUrl($order->seller->whatsapp, "Halo, saya ingin menanyakan status order {$order->order_code}."),
         ]);
     }
 }

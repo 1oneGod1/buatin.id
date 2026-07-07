@@ -103,7 +103,7 @@
                     <label class="block"><span class="{{ $lbl }}">Jumlah</span><input type="number" min="1" name="quantity" value="{{ old('quantity', 1) }}" class="{{ $inp }}"></label>
                 @endif
                 @if ($fields['deadline'] ?? false)
-                    <label class="block"><span class="{{ $lbl }}">Deadline</span><input type="date" name="deadline" value="{{ old('deadline') }}" class="{{ $inp }}"></label>
+                    <label class="block"><span class="{{ $lbl }}">Deadline</span><input type="date" name="deadline" value="{{ old('deadline') }}" min="{{ now()->toDateString() }}" class="{{ $inp }}"></label>
                 @endif
                 @if ($fields['budget'] ?? false)
                     <label class="block"><span class="{{ $lbl }}">Budget awal</span><input name="budget" value="{{ old('budget') }}" placeholder="Contoh: Rp200.000 - Rp300.000" class="{{ $inp }}"></label>

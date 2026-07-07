@@ -21,9 +21,9 @@ trait ResolvesSeller
         return $seller;
     }
 
-    protected function whatsappUrl(Seller $seller, string $message): string
+    protected function whatsappUrl(?string $rawNumber, string $message): string
     {
-        $number = preg_replace('/\D+/', '', $seller->whatsapp ?? '');
+        $number = preg_replace('/\D+/', '', $rawNumber ?? '');
 
         if (str_starts_with($number, '0')) {
             $number = '62'.substr($number, 1);

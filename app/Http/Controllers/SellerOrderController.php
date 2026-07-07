@@ -30,7 +30,7 @@ class SellerOrderController extends Controller
         return view('seller.orders.show', [
             'seller' => $this->seller(),
             'order' => $order->load('product', 'seller'),
-            'whatsappUrl' => $this->whatsappUrl($order->seller, "Halo {$order->customer_name}, saya sudah menerima order {$order->order_code}."),
+            'whatsappUrl' => $this->whatsappUrl($order->customer_whatsapp, "Halo {$order->customer_name}, saya sudah menerima order {$order->order_code}."),
         ]);
     }
 

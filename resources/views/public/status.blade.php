@@ -12,23 +12,33 @@
                 </a>
             </div>
 
-            @php
-                $steps = ['waiting_payment' => 'Menunggu bayar', 'received' => 'Diterima', 'processing' => 'Diproses', 'ready' => 'Siap', 'completed' => 'Selesai'];
-                $activeIndex = array_search($order->status, array_keys($steps), true);
-                $activeIndex = $activeIndex === false ? 0 : $activeIndex;
-            @endphp
-
-            <div class="mt-8 grid gap-3 md:grid-cols-5">
-                @foreach ($steps as $key => $label)
-                    @php $isDone = $loop->index <= $activeIndex; @endphp
-                    <div class="rounded-2xl border p-4 {{ $isDone ? 'border-brand/30 bg-brand-soft' : 'border-line bg-cream' }}">
-                        <div class="grid size-8 place-items-center rounded-xl text-sm font-extrabold {{ $isDone ? 'bg-brand text-white' : 'border border-line bg-white text-faint' }}">
-                            {{ $isDone ? '✓' : $loop->iteration }}
-                        </div>
-                        <p class="mt-3 text-sm font-extrabold {{ $isDone ? 'text-brand-deep' : 'text-muted' }}">{{ $label }}</p>
+            @if ($order->status === 'cancelled')
+                <div class="mt-8 flex items-center gap-3 rounded-2xl border border-coral/30 bg-coral-soft p-5 text-coral-ink">
+                    <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-coral text-base font-extrabold text-white">✕</span>
+                    <div>
+                        <p class="font-extrabold">Pesanan dibatalkan</p>
+                        <p class="mt-0.5 text-sm font-semibold">Hubungi penjual lewat WhatsApp jika ingin mendiskusikan pesanan ini kembali.</p>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @else
+                @php
+                    $steps = ['waiting_payment' => 'Menunggu bayar', 'received' => 'Diterima', 'processing' => 'Diproses', 'ready' => 'Siap', 'completed' => 'Selesai'];
+                    $activeIndex = array_search($order->status, array_keys($steps), true);
+                    $activeIndex = $activeIndex === false ? 0 : $activeIndex;
+                @endphp
+
+                <div class="mt-8 grid gap-3 md:grid-cols-5">
+                    @foreach ($steps as $key => $label)
+                        @php $isDone = $loop->index <= $activeIndex; @endphp
+                        <div class="rounded-2xl border p-4 {{ $isDone ? 'border-brand/30 bg-brand-soft' : 'border-line bg-cream' }}">
+                            <div class="grid size-8 place-items-center rounded-xl text-sm font-extrabold {{ $isDone ? 'bg-brand text-white' : 'border border-line bg-white text-faint' }}">
+                                {{ $isDone ? '✓' : $loop->iteration }}
+                            </div>
+                            <p class="mt-3 text-sm font-extrabold {{ $isDone ? 'text-brand-deep' : 'text-muted' }}">{{ $label }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
 
             <div class="mt-8 grid gap-4 sm:grid-cols-3">
                 <div class="rounded-2xl bg-cream p-4">
